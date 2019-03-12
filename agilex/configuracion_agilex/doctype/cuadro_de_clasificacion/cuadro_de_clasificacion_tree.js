@@ -1,3 +1,3 @@
-frappe.treeview_settings["CUADRO DE CLASIFICACION"] = {
+frappe.treeview_settings["Cuadro de Clasificacion"] = {
 	ignore_fields:["parent_group"]
 }

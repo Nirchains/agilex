@@ -6,5 +6,5 @@ from __future__ import unicode_literals
 import frappe
 import unittest
 
-class TestCUADRODECLASIFICACION(unittest.TestCase):
+class TestCuadroDeClasificacion(unittest.TestCase):
 	pass
