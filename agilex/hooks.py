@@ -16,7 +16,11 @@ app_license = "MIT"
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/agilex/css/agilex.css"
-# app_include_js = "/assets/agilex/js/agilex.js"
+app_include_js = "/assets/agilex/js/utils.js"
+
+website_route_rules = [
+	{"from_route": "/aplicacion/<category>", "to_route": "Transcripcion"},
+]
 
 # include js, css files in header of web template
 # web_include_css = "/assets/agilex/css/agilex.css"
