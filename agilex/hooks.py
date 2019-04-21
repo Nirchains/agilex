@@ -19,8 +19,10 @@ app_license = "MIT"
 app_include_js = "/assets/agilex/js/utils.js"
 
 website_route_rules = [
-	{"from_route": "/aplicacion/<category>", "to_route": "Transcripcion"},
-]
+	{"from_route": "/corpus/doc", "to_route": "Transcripcion"},
+	{"from_route": "/corpus/doc/<tipo_de_documento>", "to_route": "Transcripcion"},
+	{"from_route": "/corpus/forma", "to_route": "Forma"}
+	]
 
 # include js, css files in header of web template
 # web_include_css = "/assets/agilex/css/agilex.css"

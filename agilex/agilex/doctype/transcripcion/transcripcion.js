@@ -5,12 +5,16 @@ cur_frm.add_fetch("expediente", "signatura", "signatura");
 
 frappe.ui.form.on('Transcripcion', {
 	refresh: function(frm) {
-		$("textarea").css({'height': '1500px'});
+		//$('textarea[data-fieldname="presentacion_critica"]').css({'height': '1500px'});
+//		$('textarea').css({'height': '1500px'});
 		$('textarea').attr('spellcheck',false);
+		//$('textarea').autogrow();
+
+		autosize($('textarea'));
 	},
 	presentacion_critica: function(frm) {
-		var newString = frm.doc.presentacion_critica.replace(/({\d+})/g, cur_frm.cscript.transcripcion.replacer);
-		console.log("new: " + newString)
+		//var newString = frm.doc.presentacion_critica.replace(/({\d+})/g, cur_frm.cscript.transcripcion.replacer);
+		//console.log("new: " + newString)
 		//console.log(newString); // XXzzzz - XX , zzzz
 	}
 });

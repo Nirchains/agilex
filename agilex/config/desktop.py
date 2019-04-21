@@ -6,8 +6,8 @@ def get_data():
 	return [
 		{
 			"module_name": "AGILEX",
-			"color": "grey",
-			"icon": "octicon octicon-file-directory",
+			"color": "#30c57a",
+			"icon": "octicon octicon-book",
 			"type": "module",
 			"label": _("AGILEX")
 		}

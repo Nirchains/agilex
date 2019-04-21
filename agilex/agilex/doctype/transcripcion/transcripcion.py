@@ -4,24 +4,84 @@
 
 from __future__ import unicode_literals
 import frappe
+from frappe import _
 from frappe.website.website_generator import WebsiteGenerator
-from agilex.agilex.utils import obtener_codigo_transcripcion
-from cms.cms.doctype.web_module.web_module import load_module_positions
-
+from frappe.website.render import clear_cache
+from frappe.utils import today, cint, global_date_format, get_fullname, strip_html_tags, markdown
+from agilex.agilex.utils import obtener_codigo_transcripcion, obtener_html, obtener_texto_plano_desde_html
 
 class Transcripcion(WebsiteGenerator):
 	def validate(self):
 		route = frappe.db.get_value("Tipo de Documento", self.tipo_de_documento, fieldname="route")
 		codigo = obtener_codigo_transcripcion(self.expediente)
 		self.route = "{0}/{1}".format(route, codigo)
-		self.title = codigo
 
+		self.presentacion_critica_html = obtener_html(self.presentacion_critica)
+		self.presentacion_critica_texto_plano = obtener_texto_plano_desde_html(self.presentacion_critica)
+		
 	def autoname(self):
 		self.name = obtener_codigo_transcripcion(self.expediente)
 
 	def get_context(self, context):
-		context.title = self.name
+		context.parents = [
+			{"name": _("Home"), "route":"/"},
+			{"name": "Corpus", "route": "/corpus/doc"},
+			{"label": context.tipo_de_documento, "route":frappe.db.get_value("Tipo de Documento", context.tipo_de_documento, fieldname="route")}
+		]
 
-		#PFG
-		context.modules = []
-		context.module_positions, context.layout_positions = load_module_positions(context.modules)
+def get_list_context(context=None):
+
+	list_context = frappe._dict(
+		source = "templates/includes/transcripcion/transcripcion.html",
+		get_list = get_transcripcion_list,
+		children = get_children(),
+		hide_filters = False,
+		title = _('Transcripciones')
+	)
+
+	list_context.parents = [{"name": _("Home"), "route": "/"}]
+
+	return list_context
+
+def get_transcripcion_list(doctype, txt=None, filters=None, limit_start=0, limit_page_length=20, order_by=None):
+	conditions = []
+	if filters:
+		if filters.blogger:
+			conditions.append('t1.blogger="%s"' % frappe.db.escape(filters.blogger))
+		if filters.blog_category:
+			conditions.append('t1.blog_category="%s"' % frappe.db.escape(filters.blog_category))
+
+	if txt:
+		conditions.append('(t1.name like "%{0}%" or t1.title like "%{0}%")'.format(frappe.db.escape(txt)))
+
+	#if conditions:
+	frappe.local.no_cache = 1
+
+	query = """\
+		select
+			t1.route, t1.title, left(t1.title, 200) as title_res, t1.name, t1.tipo_de_documento, t1.anio,
+			t1.signatura
+		from `tabTranscripcion` t1
+		where ifnull(t1.published,0)=1
+		%(condition)s
+		order by t1.name asc
+		limit %(start)s, %(page_len)s""" % {
+			"start": limit_start, "page_len": limit_page_length,
+				"condition": (" and " + " and ".join(conditions)) if conditions else ""
+		}
+
+	#frappe.log_error(query)
+
+	transcripciones = frappe.db.sql(query, as_dict=1)
+
+	return transcripciones
+
+def get_children():
+	query = """select route as name,
+		tipo_de_documento_name as title from `tabTipo de Documento`
+		where published = 1
+		and exists (select name from `tabTranscripcion`
+			where `tabTranscripcion`.tipo_de_documento=`tabTipo de Documento`.name and published=1)
+		order by title asc"""
+	
+	return frappe.db.sql(query, as_dict=1)

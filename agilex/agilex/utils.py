@@ -6,6 +6,7 @@ from __future__ import unicode_literals
 import frappe
 import frappe.defaults
 from frappe.utils import nowdate, cstr, flt, cint, now, getdate
+from frappe.modules.utils import scrub
 from frappe import throw, _
 from bs4 import BeautifulSoup
 import re
