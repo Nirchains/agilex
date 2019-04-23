@@ -1,0 +1,47 @@
+{% if sub_title %}
+<h4 class="text-muted">{{ sub_title }}</h4>
+{% endif %}
+{% if not result -%}
+    <div class="text-muted no-results" style="min-height: 300px;">
+				<i class="mega-octicon octicon-telescope"></i>
+    		{{ no_result_message or _("Nothing to show") }}
+    </div>
+{% else %}
+    <div class="website-list" data-doctype="{{ doctype }}"
+        data-txt="{{ txt or '[notxt]' }}">
+        
+        {% include "templates/includes/forma/forma_filters.html" %}
+        
+		{% if result_heading_template %}{% include result_heading_template %}{% endif %}
+
+    	<div class="result">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            Forma
+                        </th>
+                        <th>
+                            Forma<br>reversa
+                        </th>
+                        <th>
+                            Frecuencia<br>absoluta
+                        </th>
+                        <th>
+                            Frecuencia<br>relativa
+                        </th>
+                        <th width="70"></th>
+                    </tr>
+                </thead>
+                <tbody>
+            		{% for item in result %}
+            			{{ item }}
+            		{% endfor %}
+                </tbody>
+            </table>
+    	</div>
+    	<div class="more-block {% if not show_more -%} hide {%- endif %}">
+    		<button class="btn btn-default btn-more btn-sm">{{ _("More") }}</button>
+    	</div>
+    </div>
+{%- endif %}

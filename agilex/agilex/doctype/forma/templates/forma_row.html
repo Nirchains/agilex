@@ -1,4 +1,19 @@
-<div>
-	<a href={{ route }}>{{ title }}</a>
-</div>
-<!-- this is a sample default list template -->
+<tr class="doc-{{doc.name}}">
+	<td>
+		<a href='/{{ doc.route }}'>{{ doc.forma }}</a>
+	</td>
+	<td>
+		
+		{{ doc.forma_reversa }}
+
+	</td>
+	<td>
+		{{ doc.frecuencia_absoluta }}
+	</td>
+	<td>
+		{{ doc.frecuencia_relativa|round(2) }}%
+	</td>
+	<td>
+		<a class="btn btn-primary btn-xs" href='/{{ doc.route }}'>Ver</a>
+	</td>
+</tr>

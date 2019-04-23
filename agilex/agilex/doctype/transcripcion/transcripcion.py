@@ -8,7 +8,7 @@ from frappe import _
 from frappe.website.website_generator import WebsiteGenerator
 from frappe.website.render import clear_cache
 from frappe.utils import today, cint, global_date_format, get_fullname, strip_html_tags, markdown
-from agilex.agilex.utils import obtener_codigo_transcripcion, obtener_html, obtener_texto_plano_desde_html
+from agilex.agilex.utils import obtener_codigo_transcripcion, obtener_html, obtener_texto_plano_desde_html, obtener_html_tp, actualiza_formas_pc
 
 class Transcripcion(WebsiteGenerator):
 	def validate(self):
@@ -17,7 +17,13 @@ class Transcripcion(WebsiteGenerator):
 		self.route = "{0}/{1}".format(route, codigo)
 
 		self.presentacion_critica_html = obtener_html(self.presentacion_critica)
-		self.presentacion_critica_texto_plano = obtener_texto_plano_desde_html(self.presentacion_critica)
+		self.presentacion_critica_texto_plano = obtener_texto_plano_desde_html(self.presentacion_critica_html)
+
+		self.transcripcion_paleografica_html = obtener_html_tp(self.transcripcion_paleografica)
+		self.transcripcion_paleografica_texto_plano = obtener_texto_plano_desde_html(self.transcripcion_paleografica_html)
+
+		formas = actualiza_formas_pc(self.presentacion_critica_texto_plano, self.name)
+		
 		
 	def autoname(self):
 		self.name = obtener_codigo_transcripcion(self.expediente)
@@ -46,11 +52,9 @@ def get_list_context(context=None):
 def get_transcripcion_list(doctype, txt=None, filters=None, limit_start=0, limit_page_length=20, order_by=None):
 	conditions = []
 	if filters:
-		if filters.blogger:
-			conditions.append('t1.blogger="%s"' % frappe.db.escape(filters.blogger))
-		if filters.blog_category:
-			conditions.append('t1.blog_category="%s"' % frappe.db.escape(filters.blog_category))
-
+		if filters.tipo_de_documento:
+			conditions.append('t1.tipo_de_documento="%s"' % frappe.db.escape(filters.tipo_de_documento))
+		
 	if txt:
 		conditions.append('(t1.name like "%{0}%" or t1.title like "%{0}%")'.format(frappe.db.escape(txt)))
 
@@ -70,7 +74,7 @@ def get_transcripcion_list(doctype, txt=None, filters=None, limit_start=0, limit
 				"condition": (" and " + " and ".join(conditions)) if conditions else ""
 		}
 
-	#frappe.log_error(query)
+	#frappe.log_error(filters)
 
 	transcripciones = frappe.db.sql(query, as_dict=1)
 

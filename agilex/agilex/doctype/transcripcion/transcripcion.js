@@ -6,11 +6,23 @@ cur_frm.add_fetch("expediente", "signatura", "signatura");
 frappe.ui.form.on('Transcripcion', {
 	refresh: function(frm) {
 		//$('textarea[data-fieldname="presentacion_critica"]').css({'height': '1500px'});
-//		$('textarea').css({'height': '1500px'});
+		//$('textarea').css({'height': '1500px'});
+		
+		//Deshabilitamos el corrector
 		$('textarea').attr('spellcheck',false);
-		//$('textarea').autogrow();
-
+		
 		autosize($('textarea'));
+
+		if(!frm.doc.__islocal) {
+			frm.add_custom_button(__("Ver formas"),
+				function() {
+					frappe.route_options = {
+						"transcripcion": frm.doc.name
+					};
+					frappe.set_route("List", "Forma");
+				}
+			);	
+		}
 	},
 	presentacion_critica: function(frm) {
 		//var newString = frm.doc.presentacion_critica.replace(/({\d+})/g, cur_frm.cscript.transcripcion.replacer);

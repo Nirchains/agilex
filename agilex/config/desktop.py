@@ -10,5 +10,12 @@ def get_data():
 			"icon": "octicon octicon-book",
 			"type": "module",
 			"label": _("AGILEX")
+		},
+		{
+			"module_name": "Configuracion Agilex",
+			"color": "grey",
+			"icon": "octicon octicon-gear",
+			"type": "module",
+			"label": _("Configuracion Agilex")
 		}
 	]
