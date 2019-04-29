@@ -13,7 +13,7 @@ from agilex.agilex.utils import obtener_codigo_transcripcion, obtener_html, obte
 class Transcripcion(WebsiteGenerator):
 	def validate(self):
 		route = frappe.db.get_value("Tipo de Documento", self.tipo_de_documento, fieldname="route")
-		codigo = obtener_codigo_transcripcion(self.expediente)
+		codigo = obtener_codigo_transcripcion(self.expediente, self.name)
 		self.route = "{0}/{1}".format(route, codigo)
 
 		self.presentacion_critica_html = obtener_html(self.presentacion_critica)
@@ -26,7 +26,7 @@ class Transcripcion(WebsiteGenerator):
 		
 		
 	def autoname(self):
-		self.name = obtener_codigo_transcripcion(self.expediente)
+		self.name = obtener_codigo_transcripcion(self.expediente, self.name)
 
 	def get_context(self, context):
 		context.parents = [
@@ -45,7 +45,8 @@ def get_list_context(context=None):
 		title = _('Transcripciones')
 	)
 
-	list_context.parents = [{"name": _("Home"), "route": "/"}]
+	list_context.parents = [{"name": _("Home"), "route": "/"},
+							{"name": _("Corpus"), "route": "/corpus/doc"}]
 
 	return list_context
 

@@ -33,8 +33,8 @@ frappe.ui.form.on('Transcripcion', {
 
 
 cur_frm.cscript.transcripcion = {
-	replacer: function(str, p1, offset, s) {
+	/*replacer: function(str, p1, offset, s) {
 		var n_linea = p1.replace(/[{}]/g,'');
 		return str.replace(p1, "<span class='linea'>" + n_linea + "</span>");
-	}
+	}*/
 }

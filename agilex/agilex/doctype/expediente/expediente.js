@@ -20,7 +20,8 @@ frappe.ui.form.on('Expediente', {
 		frappe.call({
 			method: "agilex.agilex.utils.obtener_codigo_expediente",
 			args: {
-				"tipo_de_documento": frm.doc.tipo_de_documento
+				"tipo_de_documento": frm.doc.tipo_de_documento,
+				"name": frm.doc.name
 			},
 			callback: function(r) {
 				if(!r.message) {

@@ -14,4 +14,4 @@ class Expediente(Document):
 		#	frappe.rename_doc(self.doctype, self.name, self.expediente_name)
 
 	def autoname(self):
-		self.name = obtener_codigo_expediente(self.tipo_de_documento)
+		self.name = obtener_codigo_expediente(self.tipo_de_documento, self.name)

@@ -1,8 +1,37 @@
 {% extends "templates/web.html" %}
 
+{% block title %}
+	{{ name or title or (_("{0} List").format(_(doctype))) }}
+{% endblock %}
+
+{% block header %}
+	<h1>{{ title or (_("{0} List").format(_(doctype))) }}</h1>
+{% endblock %}
+
+{% block breadcrumbs %}
+	{% include "templates/includes/transcripcion/breadcrumbs.html" %}
+{% endblock %}
+
 {% block page_content %}
-<h1>{{ title }}</h1>
-{{presentacion_critica}}
+
+<div class="row">
+	<div class="col-md-6">
+		<div class="featured-box featured-box-primary featured-box-text-left mt-0">
+			<div class="box-content p-3">
+				<h2 class="font-weight-normal text-6">Presentación <strong class="font-weight-extra-bold">crítica</strong></h2>
+				{{presentacion_critica_html}}
+			</div>
+		</div>
+	</div>
+	<div class="col-md-6">
+		<div class="featured-box featured-box-primary featured-box-text-left mt-0">
+			<div class="box-content p-3">
+				<h2 class="font-weight-normal text-6">Transcripción <strong class="font-weight-extra-bold">paleográfica</strong></h2>
+				{{transcripcion_paleografica_html}}
+			</div>
+		</div>
+	</div>
+</div>
 {% endblock %}
 
 <!-- this is a sample default web page template -->
