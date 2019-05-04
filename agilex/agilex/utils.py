@@ -127,3 +127,21 @@ def actualiza_formas_pc(presentacion_critica, transcripcion):
 
 				new_forma.save()
 
+
+@frappe.whitelist()
+#Carga plantilla del repositorio de ficheros
+def load_transcriptores_por_defecto(parentfield):
+	
+	plantilla = []
+
+	try:
+		plantilla = frappe.get_list("Transcripcion Transcriptores", 
+								filters={'parent': 'Configuracion del Programa',
+										'parenttype': 'Configuracion del Programa',
+										'parentfield': parentfield },
+								fields="*")
+	except Exception as e:
+		frappe.msgprint(_("No se ha podido obtener la plantilla"))
+		raise e
+	
+	return plantilla
