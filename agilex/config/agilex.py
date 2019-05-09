@@ -10,17 +10,17 @@ def get_data():
 				{
 					"type": "doctype",
 					"name": "Expediente",
-					"label": "Expedientes",
+					"label": "<i class='octicon octicon-package'></i> Expedientes",
 				},
 				{
 					"type": "doctype",
 					"name": "Transcripcion",
-					"label": "Transcripciones",
+					"label": "<i class='octicon octicon-file-text'></i> Transcripciones",
 				},
 				{
 					"type": "doctype",
 					"name": "Forma",
-					"label": "Formas"
+					"label": "<i class='octicon octicon-list-unordered'></i> Formas"
 				}
 			]
 		},
@@ -31,7 +31,7 @@ def get_data():
 				{
 					"type": "doctype",
 					"name": "Transcriptores",
-					"label": "Transcriptores"
+					"label": "<i class='octicon octicon-organization'></i> Transcriptores"
 				}
 			]
 		}
