@@ -4,3 +4,5 @@
 *.swp
 tags
 agilex/docs/current
+cms/public/css/build
+cms/public/js/build
