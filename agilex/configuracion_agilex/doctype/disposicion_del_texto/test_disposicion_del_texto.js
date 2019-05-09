@@ -2,7 +2,7 @@
 // rename this file from _test_[name] to test_[name] to activate
 // and remove above this line
 
-QUnit.test("test: Disposición del Texto", function (assert) {
+QUnit.test("test: Disposicion del Texto", function (assert) {
 	let done = assert.async();
 
 	// number of asserts
@@ -10,7 +10,7 @@ QUnit.test("test: Disposición del Texto", function (assert) {
 
 	frappe.run_serially([
 		// insert a new Tipo de Linea
-		() => frappe.tests.make('Disposición del Texto', [
+		() => frappe.tests.make('Disposicion del Texto', [
 			// values to be set
 			{key: 'value'}
 		]),
