@@ -1,0 +1,26 @@
+<tr class="doc-{{doc.name}}">
+	<td>
+		<a href='/{{ doc.route }}'>{{ doc.name }}</a>
+	</td>
+	<td>
+		
+		{% if doc.title != doc.title_res %}
+		<span class="doc-title" data-toggle="tooltip" title="{{ doc.title }}">{{ doc.title_res }}...</span>
+		{% else %}
+		{{ doc.title }}
+		{% endif %}
+
+	</td>
+	<td>
+		{{ doc.signatura }}
+	</td>
+	<td>
+		{{ doc.tipo_de_documento }}
+	</td>
+	<td>
+		{{ doc.anio }}
+	</td>
+	<td>
+		<a class="btn btn-primary" href='/{{ doc.route }}'>Ver</a>
+	</td>
+</tr>

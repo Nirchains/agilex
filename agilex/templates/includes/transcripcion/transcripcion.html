@@ -1,0 +1,35 @@
+{% extends "templates/web.html" %}
+
+{% block title %}{{ title or _("Transcripciones") }}{% endblock %}
+{% block header %}<h1>{{ title or _("Transcripciones") }}</h1>{% endblock %}
+{% block hero %}{% endblock %}
+
+{% block page_content %}
+<!-- no-header -->
+<!-- no-breadcrumbs -->
+<div class="tabs">
+	<ul class="nav nav-tabs">
+		<li class="nav-item active">
+			<a class="nav-link" href="/corpus/doc">Documentos</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" href="/corpus/forma">Formas</a>
+		</li>
+	</ul>
+	<div class="tab-content">
+		<div id="documentos" class="tab-pane active">
+			<div class="list-content">
+				<div id="list">
+					{% include "templates/includes/transcripcion/transcripcion_list.html" %}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+{% endblock %}
+
+{% block script %}
+<script>{% include "templates/includes/list/list.js" %}</script>
+{% endblock %}
