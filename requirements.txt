@@ -1,2 +1,0 @@
-frappe
-jodit_html_editor
