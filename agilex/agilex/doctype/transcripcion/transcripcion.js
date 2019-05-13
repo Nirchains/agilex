@@ -46,9 +46,8 @@ $.extend(agilex.transcripcion, {
 				},
 				callback: function(r) {
 					if(r.message) {
-						console.log(r.message);
 						$.each(r.message, function(i, item) {
-							var d = frappe.model.add_child(frm.doc, "Transcriptores", destin_table);
+							var d = frappe.model.add_child(frm.doc, "Transcripcion Transcriptores", destin_table);
 							frappe.model.set_value(d.doctype, d.name, "transcriptor", item.transcriptor);
 						});
 					}
