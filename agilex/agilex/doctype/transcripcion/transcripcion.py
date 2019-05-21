@@ -21,10 +21,10 @@ class Transcripcion(WebsiteGenerator):
 
 		self.transcripcion_paleografica_html = obtener_html_tp(self.transcripcion_paleografica)
 		self.transcripcion_paleografica_texto_plano = obtener_texto_plano_desde_html(self.transcripcion_paleografica_html)
-
+	
+	def on_update(self):
 		formas = actualiza_formas_pc(self.presentacion_critica_texto_plano, self.name)
-		
-		
+	
 	def autoname(self):
 		self.name = obtener_codigo_transcripcion(self.expediente, self.name)
 
@@ -34,6 +34,7 @@ class Transcripcion(WebsiteGenerator):
 			{"name": "Corpus", "route": "/corpus/doc"},
 			{"label": context.tipo_de_documento, "route":frappe.db.get_value("Tipo de Documento", context.tipo_de_documento, fieldname="route")}
 		]
+
 
 def get_list_context(context=None):
 
