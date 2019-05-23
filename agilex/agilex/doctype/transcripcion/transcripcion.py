@@ -32,22 +32,29 @@ class Transcripcion(WebsiteGenerator):
 		context.parents = [
 			{"name": _("Home"), "route":"/"},
 			{"name": "Corpus", "route": "/corpus/doc"},
-			{"label": context.tipo_de_documento, "route":frappe.db.get_value("Tipo de Documento", context.tipo_de_documento, fieldname="route")}
+			{"name": context.tipo_de_documento, "route":frappe.db.get_value("Tipo de Documento", context.tipo_de_documento, fieldname="route")}
 		]
 
 
 def get_list_context(context=None):
+
+	if frappe.local.form_dict.tipo_de_documento:
+		tipo_de_documento = frappe.db.get_value("Tipo de Documento", frappe.local.form_dict.tipo_de_documento, fieldname="tipo_de_documento_name")
+		title = "Transcripciones de <b>{0}</b>".format(tipo_de_documento)
+	else:
+		title = _('Transcripciones')
 
 	list_context = frappe._dict(
 		source = "templates/includes/transcripcion/transcripcion.html",
 		get_list = get_transcripcion_list,
 		children = get_children(),
 		hide_filters = False,
-		title = _('Transcripciones')
+		title = title
 	)
 
 	list_context.parents = [{"name": _("Home"), "route": "/"},
-							{"name": _("Corpus"), "route": "/corpus/doc"}]
+							{"name": _("Corpus"), "route": "/corpus/doc"}
+							]
 
 	return list_context
 
@@ -65,9 +72,11 @@ def get_transcripcion_list(doctype, txt=None, filters=None, limit_start=0, limit
 
 	query = """\
 		select
-			t1.route, t1.title, left(t1.title, 200) as title_res, t1.name, t1.tipo_de_documento, t1.anio,
+			t1.route, t1.title, left(t1.title, 200) as title_res, t1.name, t1.tipo_de_documento, td.route as ruta_tipo_de_documento, t1.anio,
 			t1.signatura
 		from `tabTranscripcion` t1
+		inner join `tabExpediente` te on t1.expediente=te.name
+		inner join `tabTipo de Documento` td on te.tipo_de_documento=td.name
 		where ifnull(t1.published,0)=1
 		%(condition)s
 		order by t1.name asc

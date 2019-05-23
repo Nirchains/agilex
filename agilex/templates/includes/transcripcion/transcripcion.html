@@ -8,14 +8,8 @@
 <!-- no-header -->
 <!-- no-breadcrumbs -->
 <div class="tabs">
-	<ul class="nav nav-tabs">
-		<li class="nav-item active">
-			<a class="nav-link" href="/corpus/doc">Documentos</a>
-		</li>
-		<li class="nav-item">
-			<a class="nav-link" href="/corpus/forma">Formas</a>
-		</li>
-	</ul>
+	{% set active="Documentos" %}
+	{% include "templates/includes/tabs_corpus.html" %}
 	<div class="tab-content">
 		<div id="documentos" class="tab-pane active">
 			<div class="list-content">

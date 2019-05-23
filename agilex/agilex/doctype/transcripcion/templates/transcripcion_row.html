@@ -5,20 +5,20 @@
 	<td>
 		
 		{% if doc.title != doc.title_res %}
-		<span class="doc-title" data-toggle="tooltip" title="{{ doc.title }}">{{ doc.title_res }}...</span>
+		<span class="doc-title" data-toggle="tooltip" title="{{ doc.title }}">{{ doc.title_res or '' }}...</span>
 		{% else %}
-		{{ doc.title }}
+		{{ doc.title or '' }}
 		{% endif %}
 
 	</td>
 	<td>
-		{{ doc.signatura }}
+		{{ doc.signatura or '' }}
 	</td>
 	<td>
-		{{ doc.tipo_de_documento }}
+		<a href="/{{doc.ruta_tipo_de_documento}}">{{ doc.tipo_de_documento }}</a>
 	</td>
 	<td>
-		{{ doc.anio }}
+		{{ doc.anio or '' }}
 	</td>
 	<td>
 		<a class="btn btn-primary" href='/{{ doc.route }}'>Ver</a>

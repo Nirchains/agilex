@@ -15,15 +15,21 @@ from bs4 import BeautifulSoup
 #obtiene un código del tipo dd-dd
 @frappe.whitelist()
 def obtener_codigo_expediente(tipo_de_documento, name):
-	codigo_tipo_de_documento = frappe.db.get_value("Tipo de Documento", tipo_de_documento, fieldname="codigo") or ''
-	contador = cint(frappe.db.count("Expediente", {"tipo_de_documento": tipo_de_documento, "name": ("!=", name or "")})) + 1
+	if name:
+		return name
+	else:
+		codigo_tipo_de_documento = frappe.db.get_value("Tipo de Documento", tipo_de_documento, fieldname="codigo") or ''
+		contador = cint(frappe.db.count("Expediente", {"tipo_de_documento": tipo_de_documento, "name": ("!=", name or "")})) + 1
 
-	return "{0}-{1}".format(codigo_tipo_de_documento, contador)
+		return "{0}-{1}".format(codigo_tipo_de_documento, contador)
 
 #obtiene un código del tipo dd-dd-dd
 def obtener_codigo_transcripcion(expediente, name):
-	contador = cint(frappe.db.count("Transcripcion", {"expediente": expediente, "name": ("!=", name or "")})) + 1
-	return "{0}-{1}".format(expediente, contador)
+	if name:
+		return name
+	else:
+		contador = cint(frappe.db.count("Transcripcion", {"expediente": expediente, "name": ("!=", name or "")})) + 1
+		return "{0}-{1}".format(expediente, contador)
 
 @frappe.whitelist()
 def obtener_html(presentacion_critica):

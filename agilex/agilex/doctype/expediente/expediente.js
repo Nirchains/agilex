@@ -17,11 +17,18 @@ frappe.ui.form.on('Expediente', {
 		agilex.utils.rename_doc(frm.doc.doctype,frm.doc.name,frm.doc.expediente_name)
 	},
 	tipo_de_documento: function(frm) {
+		var name;
+		if(frm.doc.__islocal) {
+			name = "";
+		} else {
+			name = frm.doc.name;
+		}
+
 		frappe.call({
 			method: "agilex.agilex.utils.obtener_codigo_expediente",
 			args: {
 				"tipo_de_documento": frm.doc.tipo_de_documento,
-				"name": frm.doc.name
+				"name": name
 			},
 			callback: function(r) {
 				if(!r.message) {
@@ -31,5 +38,6 @@ frappe.ui.form.on('Expediente', {
 				}
 			}
 		});
-	}
+		}
+	
 });
