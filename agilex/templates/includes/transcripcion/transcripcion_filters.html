@@ -2,6 +2,16 @@
 	<div class="row">
 		<div class="col">
 			<form class="form-inline form-search" action="/{{ pathname }}">
+				<select name="tdoc" class="form-control">
+				{% if tipos_de_documento -%}
+					<option value="" disabled {%if tipo_de_documento==''%} selected {%endif%}>Seleccione un tipo de documento...</option>
+					{% for option in tipos_de_documento -%}
+					<option value="{{ option.route }}" {%if tipo_de_documento==option.name%} selected {%endif%}>{{ option.name }}</option>
+					{%- endfor %}
+				{% else %}
+					<option value="General">General</option>
+				{% endif %}
+				</select>
 				<div class="input-group">
 					<input class="form-control" doctype="text" name="txt"
 						placeholder="{{ _('Search...') }}" value="{{ txt or '' }}">
@@ -18,7 +28,7 @@
 	<div class="row">
 		<div class="col">
 			<div class="alert alert-warning filter-message small text-muted">{{ _('Results filtered by') }} <b>{{ txt }}</b>.
-				<a href="/{{ pathname }}" class="btn btn-default btn-xs text-muted float-right"><i class="fas fa-window-close"></i> {{ _("Limpiar búsqueda") }}</a>
+				<a href="/corpus/doc" class="btn btn-default btn-xs text-muted float-right"><i class="fas fa-window-close"></i> {{ _("Limpiar búsqueda") }}</a>
 			</div>
 		</div>
 	</div>

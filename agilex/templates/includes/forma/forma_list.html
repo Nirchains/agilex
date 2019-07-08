@@ -40,8 +40,6 @@
                 </tbody>
             </table>
     	</div>
-    	<div class="more-block {% if not show_more -%} hide {%- endif %}">
-    		<button class="btn btn-default btn-more btn-sm">{{ _("More") }}</button>
-    	</div>
+        {% include "templates/includes/list/show_more.html" %}
     </div>
 {%- endif %}

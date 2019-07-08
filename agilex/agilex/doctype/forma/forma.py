@@ -35,7 +35,8 @@ def get_list_context(context=None):
 		title = _('Formas')
 	)
 
-	list_context.parents = [{"name": _("Home"), "route": "/"}]
+	list_context.parents = [{"name": _("Home"), "route": "/"},
+							{"name": _("Corpus"), "route": "/corpus/forma"}]
 
 	return list_context
 
@@ -46,7 +47,7 @@ def get_forma_list(doctype, txt=None, filters=None, limit_start=0, limit_page_le
 			conditions.append('t1.tipo_de_documento="%s"' % frappe.db.escape(filters.tipo_de_documento))
 		
 	if txt:
-		conditions.append('(t1.name like "%{0}%" or t1.title like "%{0}%")'.format(frappe.db.escape(txt)))
+		conditions.append('(t1.name like "%{0}%" or t1.forma like "%{0}%")'.format(frappe.db.escape(txt)))
 
 	#if conditions:
 	frappe.local.no_cache = 1
