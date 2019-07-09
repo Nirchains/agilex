@@ -9,6 +9,11 @@ def get_data():
 			"items": [
 				{
 					"type": "doctype",
+					"name": "Tipo de Documento",
+					"label": "<i class='octicon octicon-link'></i> Tipos de documento"
+				},
+				{
+					"type": "doctype",
 					"name": "Expediente",
 					"label": "<i class='octicon octicon-package'></i> Expedientes",
 				},

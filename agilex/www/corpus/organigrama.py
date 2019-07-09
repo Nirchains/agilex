@@ -24,7 +24,7 @@ def get_context(context):
 	for tdoc in context.tipos_de_documento:
 		context.expedientes[tdoc.codigo] = frappe.get_list("Expediente", 
 			fields=["name", "signatura"], 
-			order_by = "name",
+			order_by = "CAST(name as unsigned)",
 			filters = {"tipo_de_documento": tdoc.name},
 			ignore_permissions=True)
 
@@ -47,7 +47,7 @@ def get_context(context):
 				from `tabTranscripcion` t1
 				where ifnull(t1.published,0)=1
 				and t1.expediente = '%(expediente)s'
-				order by t1.name asc
+				order by CAST(t1.name as unsigned) asc
 				""" % {
 					"expediente": expediente.name
 				}
