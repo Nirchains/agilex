@@ -99,7 +99,7 @@ def get_transcripcion_list(doctype, txt=None, tdoc=None, filters=None, limit_sta
 		inner join `tabTipo de Documento` td on te.tipo_de_documento=td.name
 		where ifnull(t1.published,0)=1
 		%(condition)s
-		order by CAST(t1.name as unsigned) asc
+		order by CAST(t1.name as unsigned) asc 
 		limit %(start)s, %(page_len)s""" % {
 			"start": limit_start, "page_len": limit_page_length,
 				"condition": (" and " + " and ".join(conditions)) if conditions else ""
