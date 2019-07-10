@@ -4,6 +4,7 @@
 from __future__ import unicode_literals
 import frappe
 from frappe import _
+from agilex.agilex.utils import can_edit
 
 def get_context(context):
 	#context.doc = frappe.get_doc("About Us Settings", "About Us Settings")
@@ -14,6 +15,8 @@ def get_context(context):
 	context.parents = [{"name": _("Home"), "route": "/"},
 						{"name": _("Corpus"), "route": "/corpus/organigrama"}
 					  ]
+
+	context.can_edit = can_edit()
 
 	context.tipos_de_documento = frappe.get_list("Tipo de Documento", 
 		fields=["name", "codigo","route"], 

@@ -12,7 +12,75 @@
 	{% include "templates/includes/transcripcion/breadcrumbs.html" %}
 {% endblock %}
 
+{% block content_top%}
+<section class="section section-default border-0 pb-0 mb-0">
+	<div class="container">
+		<div class="row">
+					<div class="col-md-6">
+						<h2 class="font-weight-normal text-6 pb-0 mb-0">Datos del <strong class="font-weight-extra-bold">documento</strong></h2>
+						{{render_variable('Expediente', expediente) }}
+						{{render_variable('Signatura', signatura) }}
+						{{render_variable('Número de folios', numero_folios) }}
+						
+						{{render_variable('Año', anio) }}
+						{{render_variable('Siglo', siglo) }}
+						{{render_variable('Fecha', fecha) }}
+						{{render_variable('Firma y rúbrica', firma_y_rubrica) }}
+					</div>
+						
+					<div class="col-md-6">
+						<h2 class="font-weight-normal text-6 pb-0 mb-0">Elementos paleográficos y <strong class="font-weight-extra-bold">codicológicos</strong></h2>
+						{{render_variable('Tipo de papel', tipo_de_papel) }}
+						{{render_variable('Presentación', presentacion) }}
+						{{render_variable('Disposición del texto', disposicion_del_texto) }}
+						{{render_variable('Tipo de sello', tipo_de_sello) }}
+						{{render_variable('Tipo de letra', dipo_de_letra) }}
+						{{render_variable('Estado de consevación', estado_de_conservacion) }}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<h2 class="font-weight-normal text-6 pb-0 mb-0"><strong class="font-weight-extra-bold">Transcriptores</strong></h2>
+						{% for transcriptor in transcriptores %}
+							<i class="fas fa-caret-right left-10"></i> {{ transcriptor.transcriptor}} <br>
+						{% endfor %}
+					</div>
+				</div>
+				{% if imagenes|len > 0 %}
+				<div class="row pt-4">
+					<div class="col" style="min-height: 250px;">
+						<div class="row portfolio-list lightbox" data-plugin-options="{'delegate': 'a.lightbox-portfolio', 'type': 'image', 'gallery': {'enabled': true}}">
+					{% for imagen in imagenes %}
+						<div class="col-6 col-sm-3 col-lg-2 appear-animation" data-appear-animation="expandIn" data-appear-animation-delay="200">
+							<div class="portfolio-item">
+								<span class="thumb-info thumb-info-lighten thumb-info-centered-icons border-radius-0">
+									<span class="thumb-info-wrapper border-radius-0">
+										<img src="{{imagen.imagen_adjunta}}" class="img-fluid border-radius-0" alt="">
+										<span class="thumb-info-action">
+											<a href="{{imagen.imagen_adjunta}}" class="lightbox-portfolio">
+												<span class="thumb-info-action-icon thumb-info-action-icon-light"><i class="fas fa-search text-dark"></i></span>
+											</a>
+										</span>
+									</span>
+								</span>
+							</div>
+						</div>
+					{% endfor %}
+						</div>
+					</div>
+				</div>
+
+				{% endif %}
+	</div>
+</section>
+{% endblock %}
+
 {% block page_content %}
+
+
+<div class="divider divider-style-2 taller">
+	<i class="fas fa-chevron-down"></i>
+</div>
 
 <div class="row">
 	<div class="col-md-6">
@@ -33,5 +101,9 @@
 	</div>
 </div>
 {% endblock %}
+
+{% macro render_variable(label, name) -%}
+    {% if name %}<i class="fas fa-caret-right left-10"></i> <strong class="text-color-primary">{{ label }}:</strong> {{ name }} <br> {% endif %}
+{%- endmacro %}
 
 <!-- this is a sample default web page template -->

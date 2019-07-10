@@ -152,3 +152,10 @@ def load_transcriptores_por_defecto(parentfield):
 		raise e
 	
 	return plantilla
+
+
+def can_edit():
+	if ("Administrador AGILEX" in frappe.get_roles()):
+		return True
+	else:
+		return False

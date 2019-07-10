@@ -29,7 +29,7 @@
 							{% for expediente in expedientes[tdoc.codigo] or [] %}
 							{% if expediente.documentos|len > 0 %}
 							<section class="toggle">
-								<label>{{expediente.name}}{% if expediente.signatura %}: {{expediente.signatura}}{% endif%}<br>
+								<label>{{expediente.name}}{% if expediente.signatura %}: {{expediente.signatura}}{% endif%} {% if can_edit%}<a href="/desk#Form/Expediente/{{expediente.name}}" target="_blank"><i class="fas fa-edit fas-orange float-right"></i></a>{% endif %}<br>
 									<ul class="list list-icons list-icons-sm">
 									{% for descripcion in expediente.descripcion %}
 										<li><i class="fas fa-caret-right"></i>
@@ -78,6 +78,7 @@
 													</td>
 													<td class="text-right">
 														<a class="btn btn-primary" href='/{{ doc.route }}'>Ver</a>
+														{% if can_edit%}<a href="/desk#Form/Transcripcion/{{doc.name}}" class="btn btn-light" target="_blank"><i class="fas fa-edit"></i></a>{% endif %}
 													</td>
 												</tr>
 												{% endfor %}
