@@ -69,11 +69,11 @@ def get_list_context(context=None):
 		filters = {"published":1}, 
 		ignore_permissions=True)
 	list_context.tipo_de_documento = tipo_de_documento
+	list_context.tipo_de_documento_url = frappe.local.form_dict.tipo_de_documento
 	
 	return list_context
 
 def get_transcripcion_list(doctype, txt=None, tdoc=None, filters=None, limit_start=0, limit_page_length=20, order_by=None):
-	#frappe.log_error(frappe.local.form_dict)
 	conditions = []
 	if filters:
 		if filters.tipo_de_documento:

@@ -9,8 +9,8 @@
     </div>
 {% else %}
     <div class="website-list" data-doctype="{{ doctype }}"
-        data-txt="{{ txt or '[notxt]' }}">
-               
+        data-txt="{{ txt or '[notxt]' }}" data-tdoc="{{tipo_de_documento}}">
+
 		{% if result_heading_template %}{% include result_heading_template %}{% endif %}
 
     	<div class="">

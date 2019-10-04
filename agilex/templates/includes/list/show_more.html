@@ -5,6 +5,8 @@
         <div class="bounce3"></div>
     </div>
 </div>
-<div class="more-block {% if not show_more -%} hide {%- endif %}">
+{% if show_more -%}
+<div class="more-block">
 	<button id="btn-more" class="btn btn-default btn-more btn-sm">{{ _("More") }}</button>
 </div>
+{%- endif %}

@@ -12,20 +12,7 @@ frappe.ready(function() {
 		}
 	});
 
-	//show more on scroll
-	$(window).scroll(function() {
-     	var isElementInView = cms.utils.isElementInView($(".btn-more"), false);
-
-		if (isElementInView) {
-			$('#portfolioLoadMoreLoader').addClass('portfolio-load-more-loader-showing').show();
-
-		    $(".btn-more").click();
-
-		    $('#portfolioLoadMoreLoader').removeClass('portfolio-load-more-loader-showing').hide();
-		} 
-	});
-
-
+	cms.utils.infiniteScroll();
 	
 
 });

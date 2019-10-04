@@ -13,6 +13,7 @@
 {% endblock %}
 
 {% block content_top%}
+
 <section class="section section-default border-0 mb-0">
 	<div class="container">
 		<div class="row">
@@ -20,7 +21,7 @@
 						<h2 class="font-weight-normal text-6 pb-0 mb-0">Datos del <strong class="font-weight-extra-bold">documento</strong></h2>
 						{{render_variable('Expediente', expediente) }}
 						{{render_variable('Signatura', signatura) }}
-						{{render_variable('Número de folios', numero_folios) }}
+						{{render_variable('Número de folios/láminas', numero_folios) }}
 						
 						{{render_variable('Año', anio) }}
 						{{render_variable('Siglo', siglo) }}
@@ -36,16 +37,16 @@
 						{{render_variable('Tipo de sello', tipo_de_sello) }}
 						{{render_variable('Tipo de letra', dipo_de_letra) }}
 						{{render_variable('Estado de consevación', estado_de_conservacion) }}
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-12">
+
+						{% if transcriptores|len > 0 %}
 						<h2 class="font-weight-normal text-6 pb-0 mb-0"><strong class="font-weight-extra-bold">Transcriptores</strong></h2>
 						{% for transcriptor in transcriptores %}
 							<i class="fas fa-caret-right left-10"></i> {{ transcriptor.transcriptor}} <br>
 						{% endfor %}
+						{% endif%}
 					</div>
 				</div>
+				
 				{% if imagenes|len > 0 %}
 				<div class="row pt-4">
 					<div class="col" style="min-height: 250px;">
@@ -72,14 +73,14 @@
 
 				{% endif %}
 	</div>
+	<a name="target_transcripcion"></a>
 </section>
 {% endblock %}
 
 {% block page_content %}
 
-
 <div class="divider divider-style-2 taller">
-	<i class="fas fa-chevron-down"></i>
+	<a href="#target_transcripcion"><i class="fas fa-chevron-down"></i></a>
 </div>
 
 <div class="row">

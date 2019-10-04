@@ -2,23 +2,8 @@
 // MIT License. See license.txt
 
 frappe.ready(function() {
+	cms.utils.infiniteScroll();
 
-	$(window).scroll(function() {
-     	var isElementInView = cms.utils.isElementInView($(".btn-more"), false);
-
-		if (isElementInView) {
-			$('#portfolioLoadMoreLoader').addClass('portfolio-load-more-loader-showing').show();
-
-		    $(".btn-more").click();
-
-		    $('#portfolioLoadMoreLoader').removeClass('portfolio-load-more-loader-showing').hide();
-		} 
-	});
-
-
-
-
-	
 
 });
 
