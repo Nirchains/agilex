@@ -40,6 +40,12 @@ def obtener_html(presentacion_critica):
 		patron_corchetes = re.compile(r'[{}]')
 		#obtenemos el patron de los números de hoja {hxxxx}
 		patron_numero_hoja = re.compile(r'{h.+?}')
+
+		#obtenemos el patron de las negritas *xxx*
+		patron_negrita = re.compile(r'(\*\*.+\*\*)')
+
+		#obtenemos el patron de las cursivas *xxx*
+		patron_cursiva = re.compile(r'(\*.+\*)')
 		
 		#Eliminamos el código que puede ser representado como HTML
 		presentacion_critica = BeautifulSoup(presentacion_critica, "lxml").text
@@ -56,6 +62,19 @@ def obtener_html(presentacion_critica):
 		for numero in lista_numeros:
 			numero_sin_corchetes = patron_corchetes.sub('',numero)
 			presentacion_critica = presentacion_critica.replace(numero,"<sup class='linea'>{0}</sup>".format(numero_sin_corchetes))
+
+		lista_negritas = patron_negrita.findall(presentacion_critica)
+
+		for negrita in lista_negritas:
+			negrita_html = "<b>{0}</b>".format(negrita.replace("*", ""))
+			presentacion_critica = presentacion_critica.replace(negrita,negrita_html)
+
+		lista_cursivas = patron_cursiva.findall(presentacion_critica)
+
+		for cursiva in lista_cursivas:
+			cursiva_html = "<i>{0}</i>".format(cursiva.replace("*", ""))
+			presentacion_critica = presentacion_critica.replace(cursiva, cursiva_html)
+
 
 	return presentacion_critica
 
@@ -93,51 +112,92 @@ def obtener_texto_plano_desde_html(raw_html):
 
 	return cleantext
 
-def actualiza_formas_pc(presentacion_critica, transcripcion):
-	if presentacion_critica:
-		#limpiamos de caracteres innecesarios ", . : ; ..."
-		patron_caracteres = re.compile(r'[\.\,\:\;]')
-		presentacion_critica = patron_caracteres.sub('',presentacion_critica)
+def actualiza_formas(texto, tipo_de_transcripcion, transcripcion_name, eliminar_anteriores=False):
+	print("Actualizando formas {0}.".format(tipo_de_transcripcion))
 
-		#convertimos a minúsculas el texto
-		presentacion_critica = presentacion_critica.lower()
+	lformas_ya_guardadas = []
+	ldiferencia = []
 
-		#separamos por palabras
-		formas_completo = presentacion_critica.split()
-		tamano = len(formas_completo)
+	formas_ya_guardadas = frappe.db.sql("""select forma from `tabForma`
+	where tipo_de_transcripcion=%s and transcripcion=%s order by forma""", (tipo_de_transcripcion, transcripcion_name), as_list=1)
 
-		formas = list(set(formas_completo))
+	for f in formas_ya_guardadas:
+		lformas_ya_guardadas.append(f[0])
 
-		for forma in formas:
-			name = "{0}-{1}".format(transcripcion, forma)
-			if not frappe.db.exists("Forma", name):
-				new_forma = frappe.get_doc({
-					"doctype": "Forma",
-					#"name": name,
-					"forma": forma,
-					"transcripcion": transcripcion,
-					"tipo_de_transcripcion": "Presentación crítica"})
+	#frappe.log_error("Formas ya guardadas {0}: {1}".format(tipo_de_transcripcion, lformas_ya_guardadas))
 
-				new_forma.autoname()
-				
-				new_forma.frecuencia_absoluta = formas_completo.count(forma)
-				new_forma.frecuencia_relativa = (new_forma.frecuencia_absoluta/tamano)*100
-				new_forma.forma_reversa = new_forma.forma[::-1]
+	if eliminar_anteriores:
+		borra_formas(tipo_de_transcripcion, transcripcion_name)
 
-				new_forma.insert()
-			else:
-				new_forma = frappe.get_doc("Forma", name)
+	#limpiamos de caracteres innecesarios ", . : ; ..."
+	patron_caracteres = re.compile(r'[\.\,\:\;\(\)\[\]\&\-\_\+\=\<\>\…\/\*]')
+	texto = patron_caracteres.sub('',texto or "")
 
-				new_forma.frecuencia_absoluta = formas_completo.count(forma)
-				new_forma.frecuencia_relativa = (new_forma.frecuencia_absoluta/tamano)*100
-				new_forma.forma_reversa = new_forma.forma[::-1]
+	#convertimos a minúsculas el texto
+	texto = texto.lower()
 
-				new_forma.save()
+	#separamos por palabras
+	formas_completo = texto.split()
+	tamano = len(formas_completo)
 
+	formas = list(set(formas_completo))
+
+	#frappe.log_error("Formas {0}: {1}".format(tipo_de_transcripcion, formas))
+
+	#Borrar las formas que ya no existen
+	ldiferencia = list(set(lformas_ya_guardadas) - set(formas))
+	#frappe.log_error("FDiferencia {0}: {1}".format(tipo_de_transcripcion, ldiferencia))
+	for forma in ldiferencia or []:
+		frappe.delete_doc("Forma", frappe.db.sql_list("""select name from `tabForma`
+	where tipo_de_transcripcion=%s and transcripcion=%s and forma=%s""", (tipo_de_transcripcion, transcripcion_name, forma)), for_reload=True)
+
+	for forma in formas or []:
+		name = "{0}-{1}".format(transcripcion_name, forma)
+		if eliminar_anteriores or not existe_forma(forma, transcripcion_name):
+			new_forma = frappe.get_doc({
+				"doctype": "Forma",
+				"forma": forma,
+				"transcripcion": transcripcion_name,
+				"tipo_de_transcripcion": tipo_de_transcripcion})
+
+			new_forma.autoname()
+			
+			new_forma.frecuencia_absoluta = formas_completo.count(forma)
+			new_forma.frecuencia_relativa = (new_forma.frecuencia_absoluta/tamano)*100
+			new_forma.forma_reversa = new_forma.forma[::-1]
+
+			new_forma.insert()
+
+		else:
+			forma_name = obtiene_forma_name(forma, transcripcion_name)
+			new_forma = frappe.get_doc("Forma", forma_name)
+
+			new_forma.frecuencia_absoluta = formas_completo.count(forma)
+			new_forma.frecuencia_relativa = (new_forma.frecuencia_absoluta/tamano)*100
+			new_forma.forma_reversa = new_forma.forma[::-1]
+
+			new_forma.save()
+
+def borra_formas(tipo_de_transcripcion, transcripcion_name):
+	frappe.db.sql("""delete from `tabForma`
+		where tipo_de_transcripcion=%s and transcripcion=%s""", (tipo_de_transcripcion, transcripcion_name))
+	#frappe.delete_doc("Forma", frappe.db.sql_list("""select name from `tabForma`
+	#	where tipo_de_transcripcion=%s and transcripcion=%s""", (tipo_de_transcripcion, transcripcion_name)), for_reload=True)
+
+def existe_forma(forma, transcripcion):
+	return frappe.db.count("Forma", {"forma": forma, "transcripcion": transcripcion}) > 0
+
+def obtiene_forma_name(forma, transcripcion):
+	"""Returns count of unseen likes"""
+	return frappe.db.sql("""select name
+			from `tabForma` where 
+			forma=%(forma)s
+			and transcripcion=%(transcripcion)s
+			""", {"forma": forma, "transcripcion": transcripcion})[0][0]
 
 @frappe.whitelist()
 #Carga plantilla del repositorio de ficheros
-def load_transcriptores_por_defecto(parentfield):
+def carga_transcriptores_por_defecto(parentfield):
 	
 	plantilla = []
 
@@ -152,6 +212,19 @@ def load_transcriptores_por_defecto(parentfield):
 		raise e
 	
 	return plantilla
+
+
+def actualiza_todas_las_transcripciones(expediente=None):
+	filters = {}
+	if expediente:
+		filters["expediente"] = expediente
+
+	transcripciones = frappe.get_list("Transcripcion", fields=["name"], filters = filters)
+
+	for transcripcion in transcripciones:
+		trans = frappe.get_doc("Transcripcion", transcripcion.name)
+		print("Guardando transcripcion {0}".format(transcripcion.name))
+		trans.save()
 
 
 def can_edit():

@@ -8,7 +8,7 @@ from frappe import _
 from frappe.website.website_generator import WebsiteGenerator
 from frappe.website.render import clear_cache
 from frappe.utils import today, cint, global_date_format, get_fullname, strip_html_tags, markdown
-from agilex.agilex.utils import obtener_codigo_transcripcion, obtener_html, obtener_texto_plano_desde_html, obtener_html_tp, actualiza_formas_pc
+from agilex.agilex.utils import obtener_codigo_transcripcion, obtener_html, obtener_texto_plano_desde_html, obtener_html_tp, actualiza_formas
 import requests
 from frappe.utils import get_url
 
@@ -25,7 +25,9 @@ class Transcripcion(WebsiteGenerator):
 		self.transcripcion_paleografica_texto_plano = obtener_texto_plano_desde_html(self.transcripcion_paleografica_html)
 	
 	def on_update(self):
-		formas = actualiza_formas_pc(self.presentacion_critica_texto_plano, self.name)
+		if self.autogenerar_formas:
+			actualiza_formas(self.transcripcion_paleografica_texto_plano, "Transcripción paleográfica", self.name)
+			actualiza_formas(self.presentacion_critica_texto_plano, "Presentación crítica", self.name)
 	
 	def autoname(self):
 		self.name = obtener_codigo_transcripcion(self.expediente, self.name)

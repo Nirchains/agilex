@@ -9,6 +9,8 @@ frappe.ui.form.on('Transcripcion', {
 	refresh: function(frm) {
 		//$('textarea[data-fieldname="presentacion_critica"]').css({'height': '1500px'});
 		//$('textarea').css({'height': '1500px'});
+		frm.fields_dict['elementos_codicologicos_break'].collapse();
+		frm.fields_dict['section_break_transcripciones'].collapse();
 		
 		//Deshabilitamos el corrector
 		$('textarea').attr('spellcheck',false);
@@ -23,10 +25,13 @@ frappe.ui.form.on('Transcripcion', {
 					};
 					frappe.set_route("List", "Forma");
 				}
-			);	
+			);
 		} else {
 			agilex.transcripcion.import_transcriptores_por_defecto(frm, "transcriptores_por_defecto", "transcriptores")
 		}
+	},
+	onload: function(frm) {
+		
 	},
 	presentacion_critica: function(frm) {
 		//var newString = frm.doc.presentacion_critica.replace(/({\d+})/g, cur_frm.cscript.transcripcion.replacer);
@@ -40,7 +45,7 @@ $.extend(agilex.transcripcion, {
 	import_transcriptores_por_defecto: function(frm, origin_table, destin_table) {
 		frappe.model.clear_table(frm.doc, destin_table);
 			frappe.call({
-				method: "agilex.agilex.utils.load_transcriptores_por_defecto",
+				method: "agilex.agilex.utils.carga_transcriptores_por_defecto",
 				args: {
 					"parentfield": origin_table
 				},

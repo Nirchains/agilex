@@ -4,10 +4,12 @@
 
 from __future__ import unicode_literals
 import frappe
+import re
 from frappe import _
 from frappe.website.website_generator import WebsiteGenerator
 from frappe.website.render import clear_cache
 from frappe.utils import today, cint, global_date_format, get_fullname, strip_html_tags, markdown
+from frappe.model.naming import make_autoname
 
 class Forma(WebsiteGenerator):
 	def validate(self):
@@ -16,7 +18,9 @@ class Forma(WebsiteGenerator):
 		self.route = "{0}/{1}".format(route, codigo)
 
 	def autoname(self):
-		self.name = "{0}-{1}".format(self.transcripcion, self.forma).lower()
+		patron_caracteres = re.compile(r'[\.\,\:\;\(\)\[\]\&\-\_\+\=\<\>]')
+		texto = patron_caracteres.sub('',self.forma)
+		self.name = "{0}-{1}-{2}".format(self.transcripcion, texto,make_autoname('hash', "Forma")).lower()
 
 
 	def get_context(self, context):
@@ -55,11 +59,12 @@ def get_forma_list(doctype, txt=None, filters=None, limit_start=0, limit_page_le
 	query = """\
 		select
 			t1.route, t1.name, t1.forma, t1.forma_reversa, t1.transcripcion, t1.tipo_de_transcripcion,
-			t1.frecuencia_absoluta, t1.frecuencia_relativa
+			t1.frecuencia_absoluta, t1.frecuencia_relativa, tt.route as route_transcripcion
 		from `tabForma` t1
+		inner join `tabTranscripcion` tt on t1.transcripcion = tt.name
 		where ifnull(t1.published,0)=1
 		%(condition)s
-		order by t1.name asc
+		order by CONVERT (t1.forma USING latin2),t1.tipo_de_transcripcion asc
 		limit %(start)s, %(page_len)s""" % {
 			"start": limit_start, "page_len": limit_page_length,
 				"condition": (" and " + " and ".join(conditions)) if conditions else ""

@@ -1,6 +1,6 @@
 <tr class="doc-{{doc.name}}">
 	<td>
-		<a href='/{{ doc.route }}'>{{ doc.forma }}</a>
+		<a href='#'>{{ doc.forma }}</a>
 	</td>
 	<td>
 		
@@ -14,6 +14,16 @@
 		{{ doc.frecuencia_relativa|round(2) }}%
 	</td>
 	<td>
-		<a class="btn btn-primary btn-xs" href='/{{ doc.route }}'>Ver</a>
+		<a href="/{{doc.route_transcripcion}}" data-toggle="tooltip" title="{{ doc.transcripcion}} - {{ doc.tipo_de_transcripcion }}">
+			{{ doc.transcripcion}} - 
+			{% if doc.tipo_de_transcripcion=="Transcripción paleográfica" %}
+				TP
+			{% else %}
+				PC
+			{% endif %}
+		</a>
+	</td>
+	<td>
+		<a class="btn btn-primary btn-xs invisible" href='/{{ doc.route }}'>Ver</a>
 	</td>
 </tr>

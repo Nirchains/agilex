@@ -1,6 +1,7 @@
 {% if sub_title %}
 <h4 class="text-muted">{{ sub_title }}</h4>
 {% endif %}
+{% include "templates/includes/forma/forma_filters.html" %}
 {% if not result -%}
     <div class="text-muted no-results" style="min-height: 300px;">
 				<i class="mega-octicon octicon-telescope"></i>
@@ -9,9 +10,7 @@
 {% else %}
     <div class="website-list" data-doctype="{{ doctype }}"
         data-txt="{{ txt or '[notxt]' }}">
-        
-        {% include "templates/includes/forma/forma_filters.html" %}
-        
+               
 		{% if result_heading_template %}{% include result_heading_template %}{% endif %}
 
     	<div class="">
@@ -29,6 +28,9 @@
                         </th>
                         <th>
                             Frecuencia<br>relativa
+                        </th>
+                        <th>
+                            Documento
                         </th>
                         <th width="70"></th>
                     </tr>
