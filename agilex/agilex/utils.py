@@ -126,9 +126,6 @@ def actualiza_formas(texto, tipo_de_transcripcion, transcripcion_name, eliminar_
 
 	#frappe.log_error("Formas ya guardadas {0}: {1}".format(tipo_de_transcripcion, lformas_ya_guardadas))
 
-	if eliminar_anteriores:
-		borra_formas(tipo_de_transcripcion, transcripcion_name)
-
 	#limpiamos de caracteres innecesarios ", . : ; ..."
 	patron_caracteres = re.compile(r'[\.\,\:\;\(\)\[\]\&\-\_\+\=\<\>\…\/\*]')
 	texto = patron_caracteres.sub('',texto or "")
@@ -147,9 +144,11 @@ def actualiza_formas(texto, tipo_de_transcripcion, transcripcion_name, eliminar_
 	#Borrar las formas que ya no existen
 	ldiferencia = list(set(lformas_ya_guardadas) - set(formas))
 	#frappe.log_error("FDiferencia {0}: {1}".format(tipo_de_transcripcion, ldiferencia))
+	
 	for forma in ldiferencia or []:
-		frappe.delete_doc("Forma", frappe.db.sql_list("""select name from `tabForma`
-	where tipo_de_transcripcion=%s and transcripcion=%s and forma=%s""", (tipo_de_transcripcion, transcripcion_name, forma)), for_reload=True)
+		borra_forma(tipo_de_transcripcion, transcripcion_name, forma)
+		#frappe.delete_doc("Forma", frappe.db.sql_list("""select name from `tabForma`
+	#where tipo_de_transcripcion=%s and transcripcion=%s and forma=%s""", (tipo_de_transcripcion, transcripcion_name, forma)), for_reload=True)
 
 	for forma in formas or []:
 		name = "{0}-{1}".format(transcripcion_name, forma)
@@ -178,9 +177,9 @@ def actualiza_formas(texto, tipo_de_transcripcion, transcripcion_name, eliminar_
 
 			new_forma.save()
 
-def borra_formas(tipo_de_transcripcion, transcripcion_name):
+def borra_forma(tipo_de_transcripcion, transcripcion_name, forma):
 	frappe.db.sql("""delete from `tabForma`
-		where tipo_de_transcripcion=%s and transcripcion=%s""", (tipo_de_transcripcion, transcripcion_name))
+		where tipo_de_transcripcion=%s and transcripcion=%s and forma=%s""", (tipo_de_transcripcion, transcripcion_name, forma))
 	#frappe.delete_doc("Forma", frappe.db.sql_list("""select name from `tabForma`
 	#	where tipo_de_transcripcion=%s and transcripcion=%s""", (tipo_de_transcripcion, transcripcion_name)), for_reload=True)
 
