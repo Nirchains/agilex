@@ -1,7 +1,7 @@
 <div class="website-list-filters">
 	<div class="row">
 		<div class="col">
-			<form class="form-inline form-search" action="/{{ pathname }}">
+			<form class="form-inline form-search" action="/corpus/forma">
 				<div class="input-group">
 					<input class="form-control" doctype="text" name="txt"
 						placeholder="{{ _('Search...') }}" value="{{ txt or '' }}">
@@ -18,7 +18,7 @@
 	<div class="row">
 		<div class="col">
 			<div class="alert alert-warning filter-message small text-muted">{{ _('Results filtered by') }} <b>{{ txt }}</b>.
-				<a href="/{{ pathname }}" class="btn btn-default btn-xs text-muted float-right"><i class="fas fa-window-close"></i> {{ _("Limpiar búsqueda") }}</a>
+				<a href="/corpus/forma" class="btn btn-default btn-xs text-muted float-right"><i class="fas fa-window-close"></i> {{ _("Limpiar búsqueda") }}</a>
 			</div>
 		</div>
 	</div>

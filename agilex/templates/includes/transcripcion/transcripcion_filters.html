@@ -1,7 +1,7 @@
 <div class="website-list-filters">
 	<div class="row">
 		<div class="col">
-			<form class="form-inline form-search" action="/{{ pathname }}">
+			<form class="form-inline form-search" action="/corpus/doc">
 				<select name="tdoc" class="form-control">
 				{% if tipos_de_documento -%}
 					<option value="" disabled {%if tipo_de_documento==''%} selected {%endif%}>Seleccione un tipo de documento...</option>
