@@ -9,27 +9,92 @@ import frappe.defaults
 import re
 from frappe.utils import nowdate, cstr, flt, cint, now, getdate
 from frappe.modules.utils import scrub
+from frappe.model.naming import make_autoname
 from frappe import throw, _
 from bs4 import BeautifulSoup
 
-#obtiene un código del tipo dd-dd
+#obtiene un código del tipo ddd-ddd
 @frappe.whitelist()
 def obtener_codigo_expediente(tipo_de_documento, name):
 	if name:
 		return name
 	else:
 		codigo_tipo_de_documento = frappe.db.get_value("Tipo de Documento", tipo_de_documento, fieldname="codigo") or ''
+		codigo_tipo_de_documento = formatea_serie(codigo_tipo_de_documento, 3)
+
 		contador = cint(frappe.db.count("Expediente", {"tipo_de_documento": tipo_de_documento, "name": ("!=", name or "")})) + 1
+		contador = formatea_serie(contador, 3)
 
 		return "{0}-{1}".format(codigo_tipo_de_documento, contador)
 
-#obtiene un código del tipo dd-dd-dd
+#obtiene un código del tipo ddd-ddd-ddd
 def obtener_codigo_transcripcion(expediente, name):
 	if name:
 		return name
 	else:
 		contador = cint(frappe.db.count("Transcripcion", {"expediente": expediente, "name": ("!=", name or "")})) + 1
+		contador = formatea_serie(contador, 3)
 		return "{0}-{1}".format(expediente, contador)
+
+#Actualizado masivo
+def actualiza_expedientes():
+	expedientes = frappe.get_all('Expediente')
+
+	for expediente in expedientes:
+		#exp = frappe.get_doc("Expediente", expediente.get("name"))
+		name = expediente.get("name")
+		print("{0}".format(name))
+		partes = name.split("-")
+		ntdoc = cint(partes[0])
+		ntdoc = formatea_serie(ntdoc, 3)
+		nexp = cint(partes[1])
+		nexp = formatea_serie(nexp, 3)
+		
+		new_name = "{0}-{1}".format(ntdoc, nexp)
+		print(new_name)
+
+		print("------")
+
+		frappe.rename_doc('Expediente', name, new_name, force=True)
+
+		frappe.db.set_value('Expediente', name, 'expediente_name', new_name)
+		frappe.db.commit()
+		#exp.save()
+
+#Actualizado masivo
+def actualiza_transcripciones():
+	transcripciones = frappe.get_all('Transcripcion')
+
+	for transcripcion in transcripciones:
+		trans = frappe.get_doc("Transcripcion", transcripcion.get("name"))
+		exp = frappe.get_doc("Expediente", trans.get("expediente"))
+		name = transcripcion.get("name")
+		print("{0}".format(name))
+		partes = name.split("-")
+		ntdoc = cint(partes[0])
+		ntdoc = formatea_serie(ntdoc, 3)
+		nexp = cint(partes[1])
+		nexp = formatea_serie(nexp, 3)
+		ntr = cint(partes[2])
+		ntr = formatea_serie(ntr, 3)
+		
+		new_name = "{0}-{1}-{2}".format(ntdoc, nexp, ntr)
+		print(new_name)
+
+		print("------")
+
+		frappe.rename_doc('Transcripcion', name, new_name, force=True)
+		
+		route = frappe.db.get_value("Tipo de Documento", exp.get("tipo_de_documento"), fieldname="route")
+		route = "{0}/{1}".format(route, new_name)
+
+		frappe.db.set_value('Transcripcion', name, 'tipo_de_documento', exp.get("tipo_de_documento"))
+		frappe.db.set_value('Transcripcion', name, 'route', route)
+		frappe.db.commit()
+		#exp.save()
+
+def formatea_serie(numero, digitos):
+	return ('%0'+str(digitos)+'d') % numero
 
 @frappe.whitelist()
 def obtener_html(presentacion_critica):
