@@ -57,7 +57,7 @@ def actualiza_expedientes():
 
 		frappe.rename_doc('Expediente', name, new_name, force=True)
 
-		frappe.db.set_value('Expediente', name, 'expediente_name', new_name)
+		frappe.db.set_value('Expediente', new_name, 'expediente_name', new_name)
 		frappe.db.commit()
 		#exp.save()
 
@@ -88,8 +88,8 @@ def actualiza_transcripciones():
 		route = frappe.db.get_value("Tipo de Documento", exp.get("tipo_de_documento"), fieldname="route")
 		route = "{0}/{1}".format(route, new_name)
 
-		frappe.db.set_value('Transcripcion', name, 'tipo_de_documento', exp.get("tipo_de_documento"))
-		frappe.db.set_value('Transcripcion', name, 'route', route)
+		frappe.db.set_value('Transcripcion', new_name, 'tipo_de_documento', exp.get("tipo_de_documento"))
+		frappe.db.set_value('Transcripcion', new_name, 'route', route)
 		frappe.db.commit()
 		#exp.save()
 

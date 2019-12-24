@@ -21,13 +21,14 @@
 						<h2 class="font-weight-normal text-6 pb-0 mb-0">Datos del <strong class="font-weight-extra-bold">documento</strong></h2>
 						{{render_variable('Expediente', expediente) }}
 						{{render_variable('Signatura', signatura) }}
-						{{render_variable('Número de folios/láminas', numero_folios) }}
+						{{render_variable('Hoja', numero_folios) }}
 						
-						{{render_variable('Año', anio) }}
+						{{render_range('Año', anio, anio_fin) }}
 						{{render_variable('Siglo', siglo) }}
 						{{render_variable('Fecha crónica', fecha) }}
 						{{render_variable('Fecha tópica', fecha_topica) }}
-						{{render_variable('Firma y rúbrica', firma_y_rubrica) }}
+						{{render_variable('Firma', firma_y_rubrica) }}
+						{{render_variable('Rúbrica', rubrica) }}
 					</div>
 						
 					<div class="col-md-6">
@@ -106,6 +107,15 @@
 
 {% macro render_variable(label, name) -%}
     {% if name %}<i class="fas fa-caret-right left-10"></i> <strong class="text-color-primary">{{ label }}:</strong> {{ name }} <br> {% endif %}
+{%- endmacro %}
+
+{% macro render_range(label, name, name_fin) -%}
+    {% if name %}<i class="fas fa-caret-right left-10"></i> <strong class="text-color-primary">{{ label }}:</strong> {{ name }} 
+    	{% if name_fin %}
+    		&nbsp;-&nbsp;{{name_fin}}
+    	{% endif %}
+    <br> 
+    {% endif %}
 {%- endmacro %}
 
 <!-- this is a sample default web page template -->
