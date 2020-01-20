@@ -12,11 +12,11 @@
   {% include 'templates/includes/breadcrumbs.html' %}
 {% endblock %}
 
-{% block page_content %}
+{% block content_top %}
 <div class="tabs">
 	{% set active="Organigrama" %}
 	{% include "templates/includes/tabs_corpus.html" %}
-	<div class="tab-content">
+	<div class="tab-content container">
 		<div id="documentos" class="tab-pane active">
 			<div class="toggle toggle-primary" data-plugin-toggle data-plugin-options="{ 'isAccordion': false }">
 			{% if tipos_de_documento|len > 0%}

@@ -4,13 +4,13 @@
 {% block header %}<h1>{{ title or _("Formas") }}</h1>{% endblock %}
 {% block hero %}{% endblock %}
 
-{% block page_content %}
+{% block content_top %}
 <!-- no-header -->
 <!-- no-breadcrumbs -->
 <div class="tabs">
 	{% set active="Formas" %}
 	{% include "templates/includes/tabs_corpus.html" %}
-	<div class="tab-content">
+	<div class="tab-content container">
 		<div id="formas" class="tab-pane active">
 			<div class="list-content">
 				<div id="list">

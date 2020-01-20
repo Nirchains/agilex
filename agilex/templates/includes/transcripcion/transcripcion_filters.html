@@ -2,19 +2,42 @@
 	<div class="row">
 		<div class="col">
 			<form class="form-inline form-search" action="/corpus/doc">
-				<select name="tdoc" class="form-control">
-				{% if tipos_de_documento -%}
-					<option value="" disabled {%if tipo_de_documento==''%} selected {%endif%}>Seleccione un tipo de documento...</option>
-					{% for option in tipos_de_documento -%}
-					<option value="{{ option.route }}" {%if tipo_de_documento==option.name%} selected {%endif%}>{{ option.name }}</option>
-					{%- endfor %}
-				{% else %}
-					<option value="General">General</option>
-				{% endif %}
-				</select>
 				<div class="input-group">
-					<input class="form-control" doctype="text" name="txt"
-						placeholder="{{ _('Search...') }}" value="{{ txt or '' }}">
+					<div data-toggle="tooltip" title="Tipo de documento" >
+						<select name="tdoc" data-plugin-selectTwo class="form-control populate" data-placeholder="Tipo de documento..." data-allow-clear="true" select2-hidden-accessible style="max-width: 250px;">
+						{% if tipos_de_documento -%}
+							<option value="" {%if tipo_de_documento==''%} selected {%endif%}></option>
+							{% for option in tipos_de_documento -%}
+							<option value="{{ option.route }}" {%if tipo_de_documento==option.name%} selected {%endif%}>{{ option.name }}</option>
+							{%- endfor %}
+						{% else %}
+							<option value="General">General</option>
+						{% endif %}
+						</select>&nbsp;
+					</div>
+					<div data-toggle="tooltip" title="Siglo">
+						<select name="siglo" data-plugin-selectTwo class="form-control populate" data-placeholder="Siglo..." data-allow-clear="true" select2-hidden-accessible style="width: 100px;">
+						{% if siglos -%}
+							<option value="" {%if siglo==''%} selected {%endif%}></option>
+							{% for option in siglos -%}
+							<option value="{{ option.siglo }}" {%if siglo==option.siglo%} selected {%endif%}>{{ option.siglo }}</option>
+							{%- endfor %}
+						{% endif %}
+						</select>&nbsp;
+					</div>
+					<div>
+						<input class="form-control" doctype="text" name="anio_inicio" min="0" max="3000" step="1" maxlength="4" style="max-width: 100px;"
+							placeholder="{{ _('Año inicio...') }}" value="{{ anio_inicio or '' }}"  data-toggle="tooltip" title="Año de inicio mayor que...">&nbsp;
+					</div>
+					<div>
+						<input class="form-control" doctype="text" name="anio_fin" min="0" max="3000" step="1" maxlength="4" style="max-width: 100px;"
+							placeholder="{{ _('Año fin...') }}" value="{{ anio_fin or '' }}"  data-toggle="tooltip" title="Año de fin menor que...">&nbsp;
+					</div>
+					<div>
+						<input class="form-control" doctype="text" name="txt"
+							placeholder="{{ _('Search...') }}" value="{{ txt or '' }}"  data-toggle="tooltip" title="Búsqueda por código, documento o signatura">&nbsp;
+					</div>
+				
 					<span class="input-group-btn">
 						<button class="btn btn-default" type="submit">
 							<i class="fa fa-search"></i></button>
@@ -23,12 +46,21 @@
 			</form>
 		</div>
 	</div>
-	{% if txt %}
+
+	{% if txt or tipo_de_documento or siglo%}
 	<hr class="short">
 	<div class="row">
 		<div class="col">
-			<div class="alert alert-warning filter-message small text-muted">{{ _('Results filtered by') }} <b>{{ txt }}</b>.
+			<div class="alert alert-warning filter-message small text-muted">{{ _('Results filtered by') }}:
 				<a href="/corpus/doc" class="btn btn-default btn-xs text-muted float-right"><i class="fas fa-window-close"></i> {{ _("Limpiar búsqueda") }}</a>
+				<ul class="pt-0 mt-0">
+				{% if tipo_de_documento %}<li><b>Tipo de documento:</b> {{tipo_de_documento}}</li>{% endif %}
+				{% if siglo %}<li><b>Siglo:</b> {{siglo}}</li>{% endif %}
+				{% if anio_inicio %}<li><b>Año inicio mayor o igual a:</b> {{anio_inicio}}</li>{% endif %}
+				{% if anio_fin %}<li><b>Año fin menor o igual a:</b> {{anio_fin}}</li>{% endif %}
+				{% if txt %}<li><b>Código o nombre del documento:</b> {{ txt }}</li>{% endif %}
+				</ul>
+
 			</div>
 		</div>
 	</div>

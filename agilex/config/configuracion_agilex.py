@@ -61,6 +61,11 @@ def get_data():
 			"items": [
 				{
 					"type": "doctype",
+					"name": "Siglo",
+					"label": "Siglos"
+				},
+				{
+					"type": "doctype",
 					"name": "Desplegable",
 					"label": "Desplegables"
 				},

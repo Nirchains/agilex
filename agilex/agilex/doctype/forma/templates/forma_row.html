@@ -14,16 +14,15 @@
 		{{ doc.frecuencia_relativa|round(2) }}%
 	</td>
 	<td>
-		<a href="/{{doc.route_transcripcion}}" data-toggle="tooltip" title="{{ doc.transcripcion}} - {{ doc.tipo_de_transcripcion }}">
-			{{ doc.transcripcion}} - 
-			{% if doc.tipo_de_transcripcion=="Transcripción paleográfica" %}
-				TP
-			{% else %}
-				PC
-			{% endif %}
+		<a href="/{{doc.route_transcripcion}}" data-toggle="tooltip" title="{{ doc.title_res}}">
+			{{ doc.transcripcion}} - {{doc.tipo_de_transcripcion}}
 		</a>
-	</td>
-	<td>
-		<a class="btn btn-primary btn-xs invisible" href='/{{ doc.route }}'>Ver</a>
+		<p class="text-muted mb-0"><small>
+		{% if doc.title != doc.title_res %}
+			<span class="doc-title" data-toggle="tooltip" title="{{ doc.title }}">{{ doc.title_res or '' }}...</span>
+		{% else %}
+			{{ doc.title or '' }}
+		{% endif %}
+		</small></p>
 	</td>
 </tr>

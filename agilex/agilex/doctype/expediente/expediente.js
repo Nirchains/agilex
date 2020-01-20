@@ -11,6 +11,32 @@ frappe.ui.form.on('Expediente', {
 					frappe.set_route("List", "Transcripcion");
 				}
 			);	
+
+			frm.add_custom_button(__("Actualiza todas las transcripciones (m&eacute;todo masivo)"),
+				function() {
+					frappe.confirm("Esta operación puede tardar unos minutos, dependiendo del número de transcripciones del expediente y de la longitud de cada una. ¿Está seguro de que desea continuar?",
+						function () {
+							frappe.call({
+								method: "agilex.agilex.utils.actualiza_todas_las_transcripciones",
+								args: {
+									"expediente": frm.doc.name
+								},
+								callback: function(r) {
+									if(!r.message) {
+										frappe.throw(__("Este expediente no tiene ninguna transcripción"));
+									} else {
+										frappe.msgprint("Operación completada. Se han actualizado las siguientes transcripciones:<br>" + r.message);
+									}
+								}
+							});
+						},
+						function () {
+
+						}
+					);
+					
+				}
+			);	
 		}
 	},
 	after_save: function(frm) {
@@ -38,6 +64,6 @@ frappe.ui.form.on('Expediente', {
 				}
 			}
 		});
-		}
+	}
 	
 });

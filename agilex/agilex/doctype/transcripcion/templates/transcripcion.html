@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block header %}
-	<h1>{{ title or (_("{0} List").format(_(doctype))) }}</h1>
+	<h1>{{ title|truncate(200, True, '...') or (_("{0} List").format(_(doctype))) }}</h1>
 {% endblock %}
 
 {% block breadcrumbs %}
@@ -13,96 +13,120 @@
 {% endblock %}
 
 {% block content_top%}
+<!-- no-header -->
+<!-- no-breadcrumbs -->
+<div class="tabs">
+	{% set active="Documentos" %}
+	{% include "templates/includes/tabs_corpus.html" %}
+	<div class="tab-content pt-0">
+		<div id="documentos" class="tab-pane active">
+			<section class="pt-3 pb-3">
+				<div class="container">
+					<div class="row">
+								<div class="col-md-6">
+									<h2 class="font-weight-normal text-6 pb-0 mb-0">Datos del <strong class="font-weight-extra-bold">documento</strong></h2>
+									{{render_variable('Título', title) }}
+									{{render_variable('Descripción', descripcion) }}
+									{{render_variable('Expediente', expediente) }}
+									{{render_variable('Signatura', signatura) }}
+									{{render_variable('Hoja', numero_folios) }}
+									
+									{{render_range('Año', anio, anio_fin) }}
+									{{render_variable('Siglo', siglo) }}
+									{{render_variable('Fecha crónica', fecha) }}
+									{{render_variable('Fecha tópica', fecha_topica) }}
+									{{render_variable('Firma', firma_y_rubrica) }}
+									{{render_variable('Rúbrica', rubrica) }}
+								</div>
+									
+								<div class="col-md-6">
+									<h2 class="font-weight-normal text-6 pb-0 mb-0">Elementos paleográficos y <strong class="font-weight-extra-bold">codicológicos</strong></h2>
+									{{render_variable('Tipo de papel', tipo_de_papel) }}
+									{{render_variable('Presentación', presentacion) }}
+									{{render_variable('Disposición del texto', disposicion_del_texto) }}
+									{{render_variable('Tipo de sello', tipo_de_sello) }}
+									{{render_variable('Tipo de letra', dipo_de_letra) }}
+									{{render_variable('Estado de consevación', estado_de_conservacion) }}
 
-<section class="section section-default border-0 mb-0">
-	<div class="container">
-		<div class="row">
-					<div class="col-md-6">
-						<h2 class="font-weight-normal text-6 pb-0 mb-0">Datos del <strong class="font-weight-extra-bold">documento</strong></h2>
-						{{render_variable('Expediente', expediente) }}
-						{{render_variable('Signatura', signatura) }}
-						{{render_variable('Hoja', numero_folios) }}
-						
-						{{render_range('Año', anio, anio_fin) }}
-						{{render_variable('Siglo', siglo) }}
-						{{render_variable('Fecha crónica', fecha) }}
-						{{render_variable('Fecha tópica', fecha_topica) }}
-						{{render_variable('Firma', firma_y_rubrica) }}
-						{{render_variable('Rúbrica', rubrica) }}
-					</div>
-						
-					<div class="col-md-6">
-						<h2 class="font-weight-normal text-6 pb-0 mb-0">Elementos paleográficos y <strong class="font-weight-extra-bold">codicológicos</strong></h2>
-						{{render_variable('Tipo de papel', tipo_de_papel) }}
-						{{render_variable('Presentación', presentacion) }}
-						{{render_variable('Disposición del texto', disposicion_del_texto) }}
-						{{render_variable('Tipo de sello', tipo_de_sello) }}
-						{{render_variable('Tipo de letra', dipo_de_letra) }}
-						{{render_variable('Estado de consevación', estado_de_conservacion) }}
+									{% if transcriptores|len > 0 %}
+									<h2 class="font-weight-normal text-6 pb-0 mb-0"><strong class="font-weight-extra-bold">Transcriptores</strong></h2>
+									{% for transcriptor in transcriptores %}
+										<i class="fas fa-caret-right left-10"></i> {{ transcriptor.transcriptor}} <br>
+									{% endfor %}
+									{% endif%}
+								</div>
+							</div>
+							
+							{% if imagenes|len > 0 %}
+							<div class="row pt-4">
+								<div class="col" style="min-height: 250px;">
+									<div class="row portfolio-list lightbox" data-plugin-options="{'delegate': 'a.lightbox-portfolio', 'type': 'image', 'gallery': {'enabled': true}}">
+								{% for imagen in imagenes %}
+									<div class="col-6 col-sm-3 col-lg-2 appear-animation" data-appear-animation="expandIn" data-appear-animation-delay="200">
+										<div class="portfolio-item">
+											<span class="thumb-info thumb-info-lighten thumb-info-centered-icons border-radius-0">
+												<span class="thumb-info-wrapper border-radius-0">
+													<img src="{{imagen.imagen_adjunta}}" class="img-fluid border-radius-0" alt="">
+													<span class="thumb-info-action">
+														<a href="{{imagen.imagen_adjunta}}" class="lightbox-portfolio">
+															<span class="thumb-info-action-icon thumb-info-action-icon-light"><i class="fas fa-search text-dark"></i></span>
+														</a>
+													</span>
+												</span>
+											</span>
+										</div>
+									</div>
+								{% endfor %}
+									</div>
+								</div>
+							</div>
 
-						{% if transcriptores|len > 0 %}
-						<h2 class="font-weight-normal text-6 pb-0 mb-0"><strong class="font-weight-extra-bold">Transcriptores</strong></h2>
-						{% for transcriptor in transcriptores %}
-							<i class="fas fa-caret-right left-10"></i> {{ transcriptor.transcriptor}} <br>
-						{% endfor %}
-						{% endif%}
+							{% endif %}
+				</div>
+				<a name="target_transcripcion"></a>
+			</section>
+			<section class="section section-primary mt-0 mb-0 pt-1 pb-1 ">
+				<div class="container">
+					<div class="row">
+						<div class="col">
+							<a href="#target_transcripcion" class="btn btn-sm btn-modern text-2 btn-light border-0">Ver transcripciones</a>
+						
+							<a href="/corpus/forma?documento={{name}}" class="btn btn-sm btn-modern text-2 btn-light border-0">Ver formas</a>
+						</div>
 					</div>
 				</div>
-				
-				{% if imagenes|len > 0 %}
-				<div class="row pt-4">
-					<div class="col" style="min-height: 250px;">
-						<div class="row portfolio-list lightbox" data-plugin-options="{'delegate': 'a.lightbox-portfolio', 'type': 'image', 'gallery': {'enabled': true}}">
-					{% for imagen in imagenes %}
-						<div class="col-6 col-sm-3 col-lg-2 appear-animation" data-appear-animation="expandIn" data-appear-animation-delay="200">
-							<div class="portfolio-item">
-								<span class="thumb-info thumb-info-lighten thumb-info-centered-icons border-radius-0">
-									<span class="thumb-info-wrapper border-radius-0">
-										<img src="{{imagen.imagen_adjunta}}" class="img-fluid border-radius-0" alt="">
-										<span class="thumb-info-action">
-											<a href="{{imagen.imagen_adjunta}}" class="lightbox-portfolio">
-												<span class="thumb-info-action-icon thumb-info-action-icon-light"><i class="fas fa-search text-dark"></i></span>
-											</a>
-										</span>
-									</span>
-								</span>
+			</section>
+
+			<div class="divider divider-style-2 taller">
+				<a href="#target_transcripcion"><i class="fas fa-chevron-down"></i></a>
+			</div>
+
+			<section class="container transcripciones">
+				<div class="row ">
+					<div class="col-md-6">
+						<div class="featured-box featured-box-primary featured-box-text-left mt-0">
+							<div class="box-content p-3 text-justify">
+								<h2 class="font-weight-normal text-6 pb-0 mb-0">Transcripción <strong class="font-weight-extra-bold">paleográfica</strong></h2>
+								<div class="white-space-pre">{{transcripcion_paleografica_html}}</div>
 							</div>
 						</div>
-					{% endfor %}
+					</div>
+					<div class="col-md-6">
+						<div class="featured-box featured-box-primary featured-box-text-left mt-0">
+							<div class="box-content p-3 text-justify">
+								<h2 class="font-weight-normal text-6">Presentación <strong class="font-weight-extra-bold">crítica</strong></h2>
+								<div class="white-space-pre">{{presentacion_critica_html}}</div>
+							</div>
 						</div>
 					</div>
 				</div>
+			</section>
 
-				{% endif %}
-	</div>
-	<a name="target_transcripcion"></a>
-</section>
-{% endblock %}
-
-{% block page_content %}
-
-<div class="divider divider-style-2 taller">
-	<a href="#target_transcripcion"><i class="fas fa-chevron-down"></i></a>
-</div>
-
-<div class="row">
-	<div class="col-md-6">
-		<div class="featured-box featured-box-primary featured-box-text-left mt-0">
-			<div class="box-content p-3 text-justify">
-				<h2 class="font-weight-normal text-6 pb-0 mb-0">Transcripción <strong class="font-weight-extra-bold">paleográfica</strong></h2>
-				<div class="white-space-pre">{{transcripcion_paleografica_html}}</div>
-			</div>
-		</div>
-	</div>
-	<div class="col-md-6">
-		<div class="featured-box featured-box-primary featured-box-text-left mt-0">
-			<div class="box-content p-3 text-justify">
-				<h2 class="font-weight-normal text-6">Presentación <strong class="font-weight-extra-bold">crítica</strong></h2>
-				<div class="white-space-pre">{{presentacion_critica_html}}</div>
-			</div>
 		</div>
 	</div>
 </div>
+
+
 {% endblock %}
 
 {% macro render_variable(label, name) -%}

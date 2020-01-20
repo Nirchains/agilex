@@ -4,12 +4,17 @@
 frappe.ready(function() {
 
 	$("select[name='tdoc'").change(function() {
+		/*
 		search = cms.utils.getUrlParameter("txt");
 		if (search) {
 			$(location).attr("href", "/" + this.value + "?txt=" + search);
 		} else {
-			$(location).attr("href", "/" + this.value );
-		}
+			if (!this.value) {
+				$(location).attr("href", "/corpus/doc");
+			} else {
+				$(location).attr("href", "/" + this.value );
+			}
+		}*/
 	});
 
 	cms.utils.infiniteScroll();

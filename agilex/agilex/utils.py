@@ -192,14 +192,19 @@ def actualiza_formas(texto, tipo_de_transcripcion, transcripcion_name, eliminar_
 	#frappe.log_error("Formas ya guardadas {0}: {1}".format(tipo_de_transcripcion, lformas_ya_guardadas))
 
 	#limpiamos de caracteres innecesarios ", . : ; ..."
-	patron_caracteres = re.compile(r'[\.\,\:\;\(\)\[\]\&\-\_\+\=\<\>\…\/\*]')
+	patron_caracteres = re.compile(r'[\.\,\:\;\(\)\[\]\&\-\—\_\+\=\<\>\…\/\*\º\ª\!\"\'\`]*[0-9]*')
 	texto = patron_caracteres.sub('',texto or "")
 
 	#convertimos a minúsculas el texto
 	texto = texto.lower()
 
 	#separamos por palabras
-	formas_completo = texto.split()
+	formas_comp = texto.split()
+
+
+	#eliminamos los que tengan longitud inferior a 2
+	formas_completo = [x for x in formas_comp if (len(x)>2)]
+
 	tamano = len(formas_completo)
 
 	formas = list(set(formas_completo))
@@ -217,7 +222,7 @@ def actualiza_formas(texto, tipo_de_transcripcion, transcripcion_name, eliminar_
 
 	for forma in formas or []:
 		name = "{0}-{1}".format(transcripcion_name, forma)
-		if eliminar_anteriores or not existe_forma(forma, transcripcion_name):
+		if eliminar_anteriores or not existe_forma(forma, transcripcion_name, tipo_de_transcripcion):
 			new_forma = frappe.get_doc({
 				"doctype": "Forma",
 				"forma": forma,
@@ -248,8 +253,11 @@ def borra_forma(tipo_de_transcripcion, transcripcion_name, forma):
 	#frappe.delete_doc("Forma", frappe.db.sql_list("""select name from `tabForma`
 	#	where tipo_de_transcripcion=%s and transcripcion=%s""", (tipo_de_transcripcion, transcripcion_name)), for_reload=True)
 
-def existe_forma(forma, transcripcion):
-	return frappe.db.count("Forma", {"forma": forma, "transcripcion": transcripcion}) > 0
+def borra_todas_las_formas():
+	frappe.db.sql("""delete from `tabForma`""")
+
+def existe_forma(forma, transcripcion, tipo_de_transcripcion):
+	return frappe.db.count("Forma", {"forma": forma, "transcripcion": transcripcion, "tipo_de_transcripcion": tipo_de_transcripcion}) > 0
 
 def obtiene_forma_name(forma, transcripcion):
 	"""Returns count of unseen likes"""
@@ -277,9 +285,12 @@ def carga_transcriptores_por_defecto(parentfield):
 	
 	return plantilla
 
-
+@frappe.whitelist()
 def actualiza_todas_las_transcripciones(expediente=None):
 	filters = {}
+
+	mensaje = ""
+
 	if expediente:
 		filters["expediente"] = expediente
 
@@ -287,8 +298,14 @@ def actualiza_todas_las_transcripciones(expediente=None):
 
 	for transcripcion in transcripciones:
 		trans = frappe.get_doc("Transcripcion", transcripcion.name)
+		trans.autogenerar_formas = 1
 		print("Guardando transcripcion {0}".format(transcripcion.name))
+
 		trans.save()
+
+		mensaje = "{0}<br>- {1}".format(mensaje, transcripcion.name)
+
+	return mensaje
 
 
 def can_edit():

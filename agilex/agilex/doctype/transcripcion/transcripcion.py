@@ -9,6 +9,7 @@ from frappe.website.website_generator import WebsiteGenerator
 from frappe.website.render import clear_cache
 from frappe.utils import today, cint, global_date_format, get_fullname, strip_html_tags, markdown
 from agilex.agilex.utils import obtener_codigo_transcripcion, obtener_html, obtener_texto_plano_desde_html, obtener_html_tp, actualiza_formas
+from six.moves.urllib.parse import quote, urlencode, urlparse
 import requests
 from frappe.utils import get_url
 
@@ -41,12 +42,27 @@ class Transcripcion(WebsiteGenerator):
 
 
 def get_list_context(context=None):
-	tipo_de_documento = ""
 	title = _('Transcripciones')
 
-	if frappe.local.form_dict.tipo_de_documento:
+	parametros = frappe.local.form_dict.copy()
+	tdoc = parametros.tdoc or ""
+	tipo_de_documento = parametros.tipo_de_documento or ""
+	txt = parametros.txt or ""
+
+	parametros.pop("doctype", None)
+	parametros.pop("tdoc", None)
+
+	#frappe.log_error("{0}".format(params))
+
+	filtros = urlencode(parametros)
+
+	if tdoc:
+		frappe.flags.redirect_location = "/{0}?{1}".format(tdoc, filtros)
+		raise frappe.Redirect
+
+	if tipo_de_documento:
 		tdoc = frappe.get_list("Tipo de Documento", 
-								filters={'route': 'corpus/doc/{0}'.format(frappe.local.form_dict.tipo_de_documento)},
+								filters={'route': 'corpus/doc/{0}'.format(tipo_de_documento)},
 								fields="tipo_de_documento_name",
 								ignore_permissions=True)
 		if tdoc and len(tdoc)==1:
@@ -70,7 +86,14 @@ def get_list_context(context=None):
 		fields=["name", "codigo","route"], 
 		filters = {"published":1}, 
 		ignore_permissions=True)
+
 	list_context.tipo_de_documento = tipo_de_documento
+	list_context.siglo = frappe.local.form_dict.siglo or ""
+	list_context.siglos = frappe.db.sql(""" Select siglo from `tabSiglo` 
+		where published = 1
+		order by ordinal asc """, as_dict=1)
+	list_context.anio_inicio = frappe.local.form_dict.anio_inicio or ""
+	list_context.anio_fin = frappe.local.form_dict.anio_fin or ""
 	list_context.tipo_de_documento_url = frappe.local.form_dict.tipo_de_documento
 	
 	return list_context
@@ -85,6 +108,15 @@ def get_transcripcion_list(doctype, txt=None, tdoc=None, filters=None, limit_sta
 								ignore_permissions=True)
 			if tdoc and len(tdoc)==1:
 				conditions.append('te.tipo_de_documento="%s"' % frappe.db.escape(tdoc[0].name))
+
+	parametros = frappe.local.form_dict
+	if parametros:
+		if parametros.siglo:
+			conditions.append('t1.siglo="%s"' % frappe.db.escape(parametros.siglo))
+		if parametros.anio_inicio:
+			conditions.append('t1.anio >= %s' % frappe.db.escape(parametros.anio_inicio))
+		if parametros.anio_fin:
+			conditions.append('if(t1.anio_fin=0, t1.anio, t1.anio_fin) <= %s' % frappe.db.escape(parametros.anio_fin))
 		
 	if txt:
 		conditions.append('(t1.name like "%{0}%" or t1.title like "%{0}%" or t1.signatura like "%{0}%")'.format(frappe.db.escape(txt)))
@@ -101,13 +133,15 @@ def get_transcripcion_list(doctype, txt=None, tdoc=None, filters=None, limit_sta
 		inner join `tabTipo de Documento` td on te.tipo_de_documento=td.name
 		where ifnull(t1.published,0)=1
 		%(condition)s
-		order by CAST(t1.name as unsigned) asc 
+		order by t1.name asc 
 		limit %(start)s, %(page_len)s""" % {
 			"start": limit_start, "page_len": limit_page_length,
 				"condition": (" and " + " and ".join(conditions)) if conditions else ""
 		}
 
-	#frappe.log_error(query)
+	#order by CAST(t1.name as unsigned) asc 
+
+	frappe.log_error(query)
 
 	transcripciones = frappe.db.sql(query, as_dict=1)
 

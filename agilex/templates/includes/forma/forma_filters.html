@@ -1,24 +1,64 @@
 <div class="website-list-filters">
-	<div class="row">
-		<div class="col">
-			<form class="form-inline form-search" action="/corpus/forma">
-				<div class="input-group">
-					<input class="form-control" doctype="text" name="txt"
-						placeholder="{{ _('Search...') }}" value="{{ txt or '' }}">
-					<span class="input-group-btn">
-						<button class="btn btn-default" type="submit">
-							<i class="fa fa-search"></i></button>
-					</span>
+	<form class="form-inline form-search" action="/corpus/forma">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-9">
+					<div class="input-group">
+						<div data-toggle="tooltip" title="Tipo de transcripción">
+							<select name="ttranscripcion" data-plugin-selectTwo class="form-control populate" data-placeholder="Tipo de documento..." data-allow-clear="true" select2-hidden-accessible >
+							{% if tipos_de_transcripcion -%}
+								<option value="" disabled {%if tipo_de_transcripcion==''%} selected {%endif%}>Tipo de transcripcion...</option>
+								{% for option in tipos_de_transcripcion -%}
+								<option value="{{ option }}" {%if tipo_de_transcripcion.lower()==option.lower()%} selected {%endif%}>{{ option }}</option>
+								{%- endfor %}
+							{% else %}
+								<option value="General">---Todas---</option>
+							{% endif %}
+							</select>&nbsp;
+						</div>
+						<div>
+							<input class="form-control" doctype="text" name="documento"
+							placeholder="Documento..."  data-toggle="tooltip" title="Búsqueda por título o código del documento" value="{{ documento or '' }}">&nbsp;
+						</div>
+						<div>
+							<input class="form-control" doctype="text" name="txt"
+							placeholder="Forma o forma reversa..."  data-toggle="tooltip" title="Búsqueda por forma o forma reversa" value="{{ txt or '' }}">&nbsp;
+						</div>
+						<span class="input-group-btn">
+							<button class="btn btn-default" type="submit">
+								<i class="fa fa-search"></i></button>
+						</span>
+					</div>	
+					
 				</div>
-			</form>
+				<div class="col-sm-3">
+					<div class="input-group">
+						<div data-toggle="tooltip" title="Ordenar por">
+							<select name="ordenar_por" class="form-control" data-plugin-selectTwo class="form-control populate" data-placeholder="Ordenar por..." data-allow-clear="true" select2-hidden-accessible>
+								<option value="" disabled {%if ordenar_por==''%} selected {%endif%}>Ordenar por...</option>
+								{% for value, name in l_ordenar_por.items() -%}
+								<option value="{{ value }}" {%if ordenar_por.lower()==value.lower()%} selected {%endif%}>{{ name }}</option>
+								{%- endfor %}
+							</select>&nbsp;
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
-	</div>
-	{% if txt %}
+	</form>
+	{% if documento or txt or tipo_de_transcripcion or ordenar_por %}
 	<hr class="short">
 	<div class="row">
 		<div class="col">
-			<div class="alert alert-warning filter-message small text-muted">{{ _('Results filtered by') }} <b>{{ txt }}</b>.
+			<div class="alert alert-warning filter-message small text-muted">{{ _('Results filtered by') }}:
 				<a href="/corpus/forma" class="btn btn-default btn-xs text-muted float-right"><i class="fas fa-window-close"></i> {{ _("Limpiar búsqueda") }}</a>
+				<ul class="pt-0 mt-0">
+				{% if tipo_de_transcripcion %}<li><b>Tipo de transcripción:</b> {{tipo_de_transcripcion}}</li>{% endif %}
+				{% if documento %}<li><b>Título o código del documento:</b> {{ documento }}</li>{% endif %}
+				{% if txt %}<li><b>Forma o forma reversa:</b> {{ txt }}</li>{% endif %}
+				{% if ordenar_por%}<li><b>Ordenado por:</b> {{ l_ordenar_por[ordenar_por] }}</li> {% endif %}
+				</ul>
+
 			</div>
 		</div>
 	</div>

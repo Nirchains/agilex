@@ -2,6 +2,12 @@
 // MIT License. See license.txt
 
 frappe.ready(function() {
+
+
+	$("select[name='ordenar_por'").change(function() {
+		document.location.search = cms.utils.insertURLParam("ordenar_por", this.value);
+	});
+
 	cms.utils.infiniteScroll();
 
 
