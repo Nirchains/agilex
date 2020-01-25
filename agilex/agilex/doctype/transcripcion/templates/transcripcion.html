@@ -25,8 +25,7 @@
 					<div class="row">
 								<div class="col-md-6">
 									<h2 class="font-weight-normal text-6 pb-0 mb-0">Datos del <strong class="font-weight-extra-bold">documento</strong></h2>
-									{{render_variable('Título', title) }}
-									{{render_variable('Descripción', descripcion) }}
+									{{render_variable_tooltip('Descripcion', title, 300) }}
 									{{render_variable('Expediente', expediente) }}
 									{{render_variable('Signatura', signatura) }}
 									{{render_variable('Hoja', numero_folios) }}
@@ -40,6 +39,7 @@
 								</div>
 									
 								<div class="col-md-6">
+									{% if tipo_de_papel or presentacion or disposicion_del_texto or tipo_de_sello or dipo_de_letra or estado_de_conservacion  %}
 									<h2 class="font-weight-normal text-6 pb-0 mb-0">Elementos paleográficos y <strong class="font-weight-extra-bold">codicológicos</strong></h2>
 									{{render_variable('Tipo de papel', tipo_de_papel) }}
 									{{render_variable('Presentación', presentacion) }}
@@ -47,9 +47,10 @@
 									{{render_variable('Tipo de sello', tipo_de_sello) }}
 									{{render_variable('Tipo de letra', dipo_de_letra) }}
 									{{render_variable('Estado de consevación', estado_de_conservacion) }}
+									{% endif %}
 
 									{% if transcriptores|len > 0 %}
-									<h2 class="font-weight-normal text-6 pb-0 mb-0"><strong class="font-weight-extra-bold">Transcriptores</strong></h2>
+									<h2 class="font-weight-normal text-6 pb-0 mb-0">Transcriptores</h2>
 									{% for transcriptor in transcriptores %}
 										<i class="fas fa-caret-right left-10"></i> {{ transcriptor.transcriptor}} <br>
 									{% endfor %}
@@ -131,6 +132,16 @@
 
 {% macro render_variable(label, name) -%}
     {% if name %}<i class="fas fa-caret-right left-10"></i> <strong class="text-color-primary">{{ label }}:</strong> {{ name }} <br> {% endif %}
+{%- endmacro %}
+
+{% macro render_variable_tooltip(label, name, tooltip_length) -%}
+    {% if name %}<i class="fas fa-caret-right left-10"></i> <strong class="text-color-primary">{{ label }}:</strong>
+    {% if name|length > tooltip_length %}
+     	<span data-toggle="tooltip" title="{{ name }}">{{ name|truncate(tooltip_length, True, '...') }} </span>
+    {% else %}
+    	{{ name }}
+    {% endif %}
+     <br> {% endif %}
 {%- endmacro %}
 
 {% macro render_range(label, name, name_fin) -%}

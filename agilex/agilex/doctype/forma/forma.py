@@ -106,7 +106,7 @@ def get_forma_list(doctype, txt=None, filters=None, limit_start=0, limit_page_le
 			"order_by": order_by
 		}
 
-	frappe.log_error("{0}<br>{1}".format(query, parametros))
+	#frappe.log_error("{0}<br>{1}".format(query, parametros))
 
 	formas = frappe.db.sql(query, as_dict=1)
 

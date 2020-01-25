@@ -141,7 +141,7 @@ def get_transcripcion_list(doctype, txt=None, tdoc=None, filters=None, limit_sta
 
 	#order by CAST(t1.name as unsigned) asc 
 
-	frappe.log_error(query)
+	#frappe.log_error(query)
 
 	transcripciones = frappe.db.sql(query, as_dict=1)
 
