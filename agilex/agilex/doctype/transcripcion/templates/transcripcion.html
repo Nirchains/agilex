@@ -34,13 +34,15 @@
 									{{render_variable('Siglo', siglo) }}
 									{{render_variable('Fecha crónica', fecha) }}
 									{{render_variable('Fecha tópica', fecha_topica) }}
+									{{render_variable('Autor del acto jurídico', autor_acto_juridico)}}
+									{{render_variable('Autor material del documento', autor_material_del_documento)}}
 									{{render_variable('Firma', firma_y_rubrica) }}
 									{{render_variable('Rúbrica', rubrica) }}
 								</div>
 									
 								<div class="col-md-6">
 									{% if tipo_de_papel or presentacion or disposicion_del_texto or tipo_de_sello or dipo_de_letra or estado_de_conservacion  %}
-									<h2 class="font-weight-normal text-6 pb-0 mb-0">Elementos paleográficos y <strong class="font-weight-extra-bold">codicológicos</strong></h2>
+									<h2 class="font-weight-normal text-4 pb-0 mb-0">Elementos paleográficos y <strong class="font-weight-extra-bold">codicológicos</strong></h2>
 									{{render_variable('Tipo de papel', tipo_de_papel) }}
 									{{render_variable('Presentación', presentacion) }}
 									{{render_variable('Disposición del texto', disposicion_del_texto) }}
@@ -48,6 +50,10 @@
 									{{render_variable('Tipo de letra', dipo_de_letra) }}
 									{{render_variable('Estado de consevación', estado_de_conservacion) }}
 									{% endif %}
+
+									{% if observaciones %}
+									{{render_variable_show_more('Observaciones', observaciones, 300)}}
+									{% endif%}
 
 									{% if transcriptores|len > 0 %}
 									<h2 class="font-weight-normal text-6 pb-0 mb-0">Transcriptores</h2>
@@ -127,11 +133,25 @@
 	</div>
 </div>
 
-
 {% endblock %}
 
 {% macro render_variable(label, name) -%}
     {% if name %}<i class="fas fa-caret-right left-10"></i> <strong class="text-color-primary">{{ label }}:</strong> {{ name }} <br> {% endif %}
+{%- endmacro %}
+
+{% macro render_variable_show_more(label, name, length_show_more) -%}
+    {% if name %}
+    <i class="fas fa-caret-right left-10"></i> <strong class="text-color-primary">{{ label }}:</strong>
+    {% if name|length > length_show_more %}
+    	<div class='text-truncate-{{label}}'>{{ name|truncate(length_show_more, True, '...') }}
+    		<button type='button' class='btn btn-light btn-xs' onclick='cms.utils.leerMas(".text-truncate-{{label}}",{{name|tojson }} );'>Mostrar más</button>
+    	</div>
+
+    {% else %}
+        {{ name }}
+    {% endif %} 
+    <br> 
+    {% endif %}
 {%- endmacro %}
 
 {% macro render_variable_tooltip(label, name, tooltip_length) -%}
