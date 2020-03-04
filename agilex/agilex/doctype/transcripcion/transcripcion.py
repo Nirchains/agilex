@@ -27,13 +27,13 @@ class Transcripcion(WebsiteGenerator):
 	
 	def on_update(self):
 		if self.autogenerar_formas:
-			frappe.msgprint("Actualizando formas, por favor, espere a que el proceso se complete ...")
+			#frappe.msgprint("Actualizando formas, por favor, espere a que el proceso se complete ...")
 			route = frappe.db.get_value("Tipo de Documento", self.tipo_de_documento, fieldname="route")
 			self.route = "{0}/{1}".format(route, self.name)
 			#self.save()
 			actualiza_formas(self.transcripcion_paleografica_texto_plano, "Transcripción paleográfica", self.name, self.renombrando)
 			actualiza_formas(self.presentacion_critica_texto_plano, "Presentación crítica", self.name, self.renombrando)
-			frappe.msgprint("... se han actualizado las formas")
+			#frappe.msgprint("... se han actualizado las formas")
 	
 	def autoname(self):
 		self.name = obtener_codigo_transcripcion(self.expediente, self.name)
