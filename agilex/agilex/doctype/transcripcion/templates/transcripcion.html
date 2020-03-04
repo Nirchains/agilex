@@ -23,9 +23,13 @@
 			<section class="pt-3 pb-3">
 				<div class="container">
 					<div class="row">
+						<div class="col-md-12">
+							<h2 class="font-weight-normal text-6 pb-0 mb-0">Datos del <strong class="font-weight-extra-bold">documento</strong></h2>
+						</div>
+					</div>
+					<div class="row">
 								<div class="col-md-6">
-									<h2 class="font-weight-normal text-6 pb-0 mb-0">Datos del <strong class="font-weight-extra-bold">documento</strong></h2>
-									{{render_variable_tooltip('Descripcion', title, 300) }}
+									{{render_variable_tooltip('Descripción', title, 300) }}
 									{{render_variable('Expediente', expediente) }}
 									{{render_variable('Signatura', signatura) }}
 									{{render_variable('Hoja', numero_folios) }}
@@ -42,7 +46,6 @@
 									
 								<div class="col-md-6">
 									{% if tipo_de_papel or presentacion or disposicion_del_texto or tipo_de_sello or dipo_de_letra or estado_de_conservacion  %}
-									<h2 class="font-weight-normal text-4 pb-0 mb-0">Elementos paleográficos y <strong class="font-weight-extra-bold">codicológicos</strong></h2>
 									{{render_variable('Tipo de papel', tipo_de_papel) }}
 									{{render_variable('Presentación', presentacion) }}
 									{{render_variable('Disposición del texto', disposicion_del_texto) }}
@@ -56,7 +59,7 @@
 									{% endif%}
 
 									{% if transcriptores|len > 0 %}
-									<h2 class="font-weight-normal text-6 pb-0 mb-0">Transcriptores</h2>
+									<br><strong>Transcriptores</strong><br>
 									{% for transcriptor in transcriptores %}
 										<i class="fas fa-caret-right left-10"></i> {{ transcriptor.transcriptor}} <br>
 									{% endfor %}

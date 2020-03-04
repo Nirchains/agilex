@@ -33,6 +33,14 @@ class Transcripcion(WebsiteGenerator):
 	def autoname(self):
 		self.name = obtener_codigo_transcripcion(self.expediente, self.name)
 
+	def after_rename(self, old, new, merge=False):
+		route = frappe.db.get_value("Tipo de Documento", self.tipo_de_documento, fieldname="route")
+		self.route = "{0}/{1}".format(route, new)
+		self.save()
+		frappe.clear_cache()
+		actualiza_formas(self.transcripcion_paleografica_texto_plano, "Transcripción paleográfica", new, True)
+		actualiza_formas(self.presentacion_critica_texto_plano, "Presentación crítica", new, True)
+
 	def get_context(self, context):
 		context.parents = [
 			{"name": _("Home"), "route":"/"},

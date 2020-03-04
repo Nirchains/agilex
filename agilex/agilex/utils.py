@@ -192,7 +192,7 @@ def actualiza_formas(texto, tipo_de_transcripcion, transcripcion_name, eliminar_
 	#frappe.log_error("Formas ya guardadas {0}: {1}".format(tipo_de_transcripcion, lformas_ya_guardadas))
 
 	#limpiamos de caracteres innecesarios ", . : ; ..."
-	patron_caracteres = re.compile(r'[\.\,\:\;\(\)\[\]\&\-\—\_\+\=\<\>\…\/\*\º\ª\!\"\'\`]*[0-9]*')
+	patron_caracteres = re.compile(r'[\.\,\:\;\(\)\[\]\&\-\—\_\+\=\<\>\…\/\*\º\ª\!\"\'\`\“]*[0-9]*')
 	texto = patron_caracteres.sub('',texto or "")
 
 	#convertimos a minúsculas el texto
@@ -221,6 +221,9 @@ def actualiza_formas(texto, tipo_de_transcripcion, transcripcion_name, eliminar_
 	#where tipo_de_transcripcion=%s and transcripcion=%s and forma=%s""", (tipo_de_transcripcion, transcripcion_name, forma)), for_reload=True)
 
 	for forma in formas or []:
+		if eliminar_anteriores:
+			borra_forma(tipo_de_transcripcion, transcripcion_name, forma)
+
 		name = "{0}-{1}".format(transcripcion_name, forma)
 		if eliminar_anteriores or not existe_forma(forma, transcripcion_name, tipo_de_transcripcion):
 			new_forma = frappe.get_doc({
