@@ -43,7 +43,7 @@ class Transcripcion(WebsiteGenerator):
 		route = frappe.db.get_value("Tipo de Documento", self.tipo_de_documento, fieldname="route")
 		self.route = "{0}/{1}".format(route, new)
 		self.save()
-		frappe.clear_cache()
+		#frappe.clear_cache()
 
 	def get_context(self, context):
 		context.parents = [
