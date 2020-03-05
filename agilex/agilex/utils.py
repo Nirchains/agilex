@@ -32,8 +32,13 @@ def obtener_codigo_transcripcion(expediente, name):
 	if name:
 		return name
 	else:
-		contador = cint(frappe.db.count("Transcripcion", {"expediente": expediente, "name": ("!=", name or "")})) + 1
-		contador = formatea_serie(contador, 3)
+		siguiente = frappe.get_value("Expediente", expediente, fieldname="secuencia") or 1
+		frappe.db.sql("update tabExpediente set secuencia = secuencia+1 where name=%s", (expediente,))
+
+		#frappe.db.sql("update tabExpediente set secuencia = secuencia+1 where name=%s", (expediente,))
+
+		#contador = cint(frappe.db.count("Transcripcion", {"expediente": expediente, "name": ("!=", name or "")})) + 1
+		contador = formatea_serie(siguiente, 3)
 		return "{0}-{1}".format(expediente, contador)
 
 #Actualizado masivo

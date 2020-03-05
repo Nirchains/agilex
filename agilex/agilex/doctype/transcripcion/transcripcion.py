@@ -14,6 +14,9 @@ import requests
 from frappe.utils import get_url
 
 class Transcripcion(WebsiteGenerator):
+	
+	renombrando = False
+
 	def validate(self):
 		route = frappe.db.get_value("Tipo de Documento", self.tipo_de_documento, fieldname="route")
 		codigo = obtener_codigo_transcripcion(self.expediente, self.name)
@@ -31,15 +34,18 @@ class Transcripcion(WebsiteGenerator):
 			route = frappe.db.get_value("Tipo de Documento", self.tipo_de_documento, fieldname="route")
 			self.route = "{0}/{1}".format(route, self.name)
 			#self.save()
-			actualiza_formas(self.transcripcion_paleografica_texto_plano, "Transcripción paleográfica", self.name, self.renombrando)
-			actualiza_formas(self.presentacion_critica_texto_plano, "Presentación crítica", self.name, self.renombrando)
+			actualiza_formas(self.transcripcion_paleografica_texto_plano, "Transcripción paleográfica", self.name, Transcripcion.renombrando)
+			actualiza_formas(self.presentacion_critica_texto_plano, "Presentación crítica", self.name, Transcripcion.renombrando)
 			#frappe.msgprint("... se han actualizado las formas")
+
+	def on_submit(self):
+		frappe.clear_document_cache("Expediente", self.expediente)
 	
 	def autoname(self):
 		self.name = obtener_codigo_transcripcion(self.expediente, self.name)
 
 	def after_rename(self, old, new, merge=False):
-		self.renombrando = True
+		Transcripcion.renombrando = True
 		route = frappe.db.get_value("Tipo de Documento", self.tipo_de_documento, fieldname="route")
 		self.route = "{0}/{1}".format(route, new)
 		self.save()
