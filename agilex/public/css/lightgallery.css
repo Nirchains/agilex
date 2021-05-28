@@ -1093,14 +1093,3 @@ body:not(.lg-from-hash) .lg-outer.lg-start-zoom .lg-item.lg-complete .lg-object 
 .home .demo-gallery {
   padding-bottom: 80px;
 }
-.linea {
-  color: red;
-}
-.transcripciones {
-  max-width: 1700px;
-}
-.lg-download,
-#lg-share,
-.lg-autoplay-button {
-  display: none;
-}

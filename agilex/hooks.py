@@ -26,7 +26,7 @@ website_route_rules = [
 
 # include js, css files in header of web template
 web_include_css = ["/assets/agilex/css/build/tratamiento.css"]
-# web_include_js = "/assets/agilex/js/agilex.js"
+web_include_js =  ["/assets/agilex/js/vendor/lightgallery-all.min.js"]
 
 # include js in page
 # page_js = {"page" : "public/js/file.js"}

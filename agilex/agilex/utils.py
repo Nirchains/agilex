@@ -106,24 +106,26 @@ def obtener_html(presentacion_critica):
 	if presentacion_critica:
 		#obtenemos el patron de los números de línea {dd}
 		patron_numeros = re.compile(r'({\d+})') 
-		#obtenemos el patron de los corchetes {dd}
+		#obtenemos el patron de los corchetes [dd]
 		patron_corchetes = re.compile(r'[{}]')
 		#obtenemos el patron de los números de hoja {hxxxx}
 		patron_numero_hoja = re.compile(r'{h.+?}')
 
-		#obtenemos el patron de las negritas *xxx*
-		patron_negrita = re.compile(r'(\*\*.+\*\*)')
+		#obtenemos el patron de las negritas **xxx**
+		patron_negrita = re.compile(r'(\*\*[^\*\[\]]+\*\*)')
 
 		#obtenemos el patron de las cursivas *xxx*
-		patron_cursiva = re.compile(r'(\*.+\*)')
+		patron_cursiva = re.compile(r'(\*[^\*\[\]]+\*)')
 		
 		#Eliminamos el código que puede ser representado como HTML
-		presentacion_critica = BeautifulSoup(presentacion_critica, "lxml").text
+		#presentacion_critica = BeautifulSoup(presentacion_critica, "lxml").text
 
 		#reemplazamos los números de página por un salto <hr>
 		lista_paginas = patron_numero_hoja.findall(presentacion_critica)
 		for pagina in lista_paginas:
-			presentacion_critica = presentacion_critica.replace(pagina, "<hr class='salto_pagina'><span class='numero_pagina'>{0}</span>".format(pagina))
+			patron_n_pag_replace = re.compile(r'[{}\s]+')
+			n_pag = patron_n_pag_replace.sub('',pagina)
+			presentacion_critica = presentacion_critica.replace(pagina, "<hr class='salto_pagina salto-pagina-{0}'><span class='numero_pagina'>{1}</span>".format(n_pag, pagina))
 
 		lista_numeros = patron_numeros.findall(presentacion_critica)
 		#para mejorar la eficiencia, eliminamos los duplicados
@@ -131,7 +133,7 @@ def obtener_html(presentacion_critica):
 		#recorremos los números con formato {dd} para quitarle los corchetes y reemplazar el texto con los estilos necesarios
 		for numero in lista_numeros:
 			numero_sin_corchetes = patron_corchetes.sub('',numero)
-			presentacion_critica = presentacion_critica.replace(numero,"<sup class='linea'>{0}</sup>".format(numero_sin_corchetes))
+			presentacion_critica = presentacion_critica.replace(numero,"<sup class='linea linea-{0}'>{0}</sup>".format(numero_sin_corchetes))
 
 		lista_negritas = patron_negrita.findall(presentacion_critica)
 
@@ -151,8 +153,8 @@ def obtener_html(presentacion_critica):
 @frappe.whitelist()
 def obtener_html_tp(transcripcion_paleografica):
 	if transcripcion_paleografica:
-		transcripcion_paleografica = transcripcion_paleografica.replace("<","")
-		transcripcion_paleografica = transcripcion_paleografica.replace(">","")
+		transcripcion_paleografica = transcripcion_paleografica.replace("<","&lt;")
+		transcripcion_paleografica = transcripcion_paleografica.replace(">","&gt;")
 		transcripcion_paleografica = obtener_html(transcripcion_paleografica)
 
 	return transcripcion_paleografica
@@ -161,6 +163,9 @@ def obtener_html_tp(transcripcion_paleografica):
 def obtener_texto_plano_desde_html(raw_html):
 	cleantext = raw_html
 	if cleantext:
+
+		cleantext = cleantext.replace("&lt;", "")
+		cleantext = cleantext.replace("&gt;", "")
 
 		#limpiamos de caracteres innecesarios
 		cleantext = cleantext.replace(" | ", " ")

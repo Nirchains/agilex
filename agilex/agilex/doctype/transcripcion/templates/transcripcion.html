@@ -5,7 +5,8 @@
 {% endblock %}
 
 {% block header %}
-	<h1>{{ title|truncate(200, True, '...') or (_("{0} List").format(_(doctype))) }}</h1>
+	{%set title_mod = title or ''%}
+	<h1>{{ title_mod|truncate(200, True, '...') or (_("{0} List").format(_(doctype))) }}</h1>
 {% endblock %}
 
 {% block breadcrumbs %}
@@ -30,9 +31,9 @@
 					<div class="row">
 								<div class="col-md-6">
 									{{render_variable_tooltip('Descripción', title, 300) }}
-									{{render_variable('Expediente', expediente) }}
+									{{render_variable('Código', name) }}
 									{{render_variable('Signatura', signatura) }}
-									{{render_variable('Hoja', numero_folios) }}
+									{{render_variable('Hoja(s)', numero_folios) }}
 									
 									{{render_range('Año', anio, anio_fin) }}
 									{{render_variable('Siglo', siglo) }}
@@ -68,28 +69,17 @@
 							</div>
 							
 							{% if imagenes|len > 0 %}
-							<div class="row pt-4">
-								<div class="col" style="min-height: 250px;">
-									<div class="row portfolio-list lightbox" data-plugin-options="{'delegate': 'a.lightbox-portfolio', 'type': 'image', 'gallery': {'enabled': true}}">
-								{% for imagen in imagenes %}
-									<div class="col-6 col-sm-3 col-lg-2 appear-animation" data-appear-animation="expandIn" data-appear-animation-delay="200">
-										<div class="portfolio-item">
-											<span class="thumb-info thumb-info-lighten thumb-info-centered-icons border-radius-0">
-												<span class="thumb-info-wrapper border-radius-0">
-													<img src="{{imagen.imagen_adjunta}}" class="img-fluid border-radius-0" alt="">
-													<span class="thumb-info-action">
-														<a href="{{imagen.imagen_adjunta}}" class="lightbox-portfolio">
-															<span class="thumb-info-action-icon thumb-info-action-icon-light"><i class="fas fa-search text-dark"></i></span>
-														</a>
-													</span>
-												</span>
-											</span>
-										</div>
-									</div>
-								{% endfor %}
-									</div>
-								</div>
-							</div>
+							<ul id="lightgallery" class="list-unstyled row pt-4">
+				              {% for imagen in imagenes %}
+				                <li class="col-xs-6 col-sm-3 col-md-2" data-src="{{imagen.imagen_adjunta}}" data-sub-html="">
+				                    <a href="">
+				                        <img class="img-fluid border-radius-0" src="{{imagen.imagen_adjunta}}">
+				                    </a>
+				                </li>
+
+				               {% endfor%}
+				                
+				            </ul>
 
 							{% endif %}
 				</div>
@@ -124,7 +114,7 @@
 					<div class="col-md-6">
 						<div class="featured-box featured-box-primary featured-box-text-left mt-0">
 							<div class="box-content p-3 text-justify">
-								<h2 class="font-weight-normal text-6">Presentación <strong class="font-weight-extra-bold">crítica</strong></h2>
+								<h2 class="font-weight-normal text-6 pb-0 mb-0">Presentación <strong class="font-weight-extra-bold">crítica</strong></h2>
 								<div class="white-space-pre">{{presentacion_critica_html}}</div>
 							</div>
 						</div>
@@ -137,6 +127,14 @@
 </div>
 
 {% endblock %}
+
+{% block script %}
+	<script type="text/javascript">
+        $(document).ready(function(){
+            $('#lightgallery').lightGallery();
+        });
+    </script>
+{% endblock%}
 
 {% macro render_variable(label, name) -%}
     {% if name %}<i class="fas fa-caret-right left-10"></i> <strong class="text-color-primary">{{ label }}:</strong> {{ name }} <br> {% endif %}

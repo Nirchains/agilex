@@ -50,20 +50,22 @@ frappe.ui.form.on('Expediente', {
 			name = frm.doc.name;
 		}
 
-		frappe.call({
-			method: "agilex.agilex.utils.obtener_codigo_expediente",
-			args: {
-				"tipo_de_documento": frm.doc.tipo_de_documento,
-				"name": name
-			},
-			callback: function(r) {
-				if(!r.message) {
-					//frappe.throw(__("No se encuentra la lista de combinaciones que forman el producto"))
-				} else {
-					frm.set_value('expediente_name',r.message);
+		if (!helper.IsNullOrEmpty(frm.doc.tipo_de_documento)) {
+			frappe.call({
+				method: "agilex.agilex.utils.obtener_codigo_expediente",
+				args: {
+					"tipo_de_documento": frm.doc.tipo_de_documento,
+					"name": name
+				},
+				callback: function(r) {
+					if(!r.message) {
+						//frappe.throw(__("No se encuentra la lista de combinaciones que forman el producto"))
+					} else {
+						frm.set_value('expediente_name',r.message);
+					}
 				}
-			}
-		});
+			});
+		}
 	}
 	
 });
