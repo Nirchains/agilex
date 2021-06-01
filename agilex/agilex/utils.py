@@ -268,6 +268,7 @@ def borra_forma(tipo_de_transcripcion, transcripcion_name, forma):
 
 def borra_todas_las_formas():
 	frappe.db.sql("""delete from `tabForma`""")
+	frappe.db.commit()
 
 def existe_forma(forma, transcripcion, tipo_de_transcripcion):
 	return frappe.db.count("Forma", {"forma": forma, "transcripcion": transcripcion, "tipo_de_transcripcion": tipo_de_transcripcion}) > 0

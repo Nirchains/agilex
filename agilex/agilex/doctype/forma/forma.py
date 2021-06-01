@@ -65,10 +65,10 @@ def get_forma_list(doctype, txt=None, filters=None, limit_start=0, limit_page_le
 
 	if parametros:
 		if parametros.ttranscripcion:
-			conditions.append('t1.tipo_de_transcripcion="%s"' % frappe.db.escape(parametros.ttranscripcion))
+			conditions.append('t1.tipo_de_transcripcion=%s' % frappe.db.escape(parametros.ttranscripcion))
 
 		if parametros.documento:
-			conditions.append('(tt.title like "%{0}%" or t1.transcripcion like "%{0}%")'.format(frappe.db.escape(parametros.documento)))
+			conditions.append('(tt.title like {0} or t1.transcripcion like {0})'.format(frappe.db.escape("%" + parametros.documento + "%")))
 
 		if parametros.ordenar_por:
 			if parametros.ordenar_por == "forma_asc":
@@ -86,7 +86,7 @@ def get_forma_list(doctype, txt=None, filters=None, limit_start=0, limit_page_le
 
 		
 	if txt:
-		conditions.append('(t1.forma like "%{0}%")'.format(frappe.db.escape(txt)))
+		conditions.append('(t1.forma like {0})'.format(frappe.db.escape("%" + txt+ "%")))
 
 	#if conditions:
 	frappe.local.no_cache = 1
@@ -108,7 +108,7 @@ def get_forma_list(doctype, txt=None, filters=None, limit_start=0, limit_page_le
 
 	#frappe.log_error("{0}<br>{1}".format(query, parametros))
 
-	formas = frappe.db.sql(query, as_dict=1)
+	formas = frappe.db.sql(query, as_dict=1, debug=True)
 
 	return formas
 

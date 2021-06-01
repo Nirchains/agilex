@@ -125,19 +125,19 @@ def get_transcripcion_list(doctype, txt=None, tdoc=None, filters=None, limit_sta
 								fields="name",
 								ignore_permissions=True)
 			if tdoc and len(tdoc)==1:
-				conditions.append('te.tipo_de_documento="%s"' % frappe.db.escape(tdoc[0].name))
+				conditions.append('te.tipo_de_documento=%s' % frappe.db.escape(tdoc[0].name))
 
 	parametros = frappe.local.form_dict
 	if parametros:
 		if parametros.siglo:
-			conditions.append('t1.siglo="%s"' % frappe.db.escape(parametros.siglo))
+			conditions.append('t1.siglo=%s' % frappe.db.escape(parametros.siglo))
 		if parametros.anio_inicio:
 			conditions.append('t1.anio >= %s' % frappe.db.escape(parametros.anio_inicio))
 		if parametros.anio_fin:
 			conditions.append('if(t1.anio_fin=0, t1.anio, t1.anio_fin) <= %s' % frappe.db.escape(parametros.anio_fin))
 		
 	if txt:
-		conditions.append('(t1.name like "%{0}%" or t1.title like "%{0}%" or t1.signatura like "%{0}%")'.format(frappe.db.escape(txt)))
+		conditions.append('(t1.name like {0} or t1.title like {0} or t1.signatura like {0})'.format(frappe.db.escape("%" + txt + "%")))
 
 	#if conditions:
 	frappe.local.no_cache = 1
@@ -161,7 +161,7 @@ def get_transcripcion_list(doctype, txt=None, tdoc=None, filters=None, limit_sta
 
 	#frappe.log_error(query)
 
-	transcripciones = frappe.db.sql(query, as_dict=1)
+	transcripciones = frappe.db.sql(query, as_dict=1, debug=True)
 
 	return transcripciones
 
