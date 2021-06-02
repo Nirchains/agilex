@@ -18,17 +18,17 @@
 	{% include "templates/includes/tabs_corpus.html" %}
 	<div class="tab-content container">
 		<div id="documentos" class="tab-pane active">
-			<div class="toggle toggle-primary" data-plugin-toggle data-plugin-options="{ 'isAccordion': false }">
+			<div class="toggle toggle-primary" data-plugin-toggle data-plugin-options="{ 'isAccordion': true, 'setActive': true }">
 			{% if tipos_de_documento|len > 0%}
 				{% for tdoc in tipos_de_documento or [] %}
 				{% if expedientes[tdoc.codigo]|len > 0 %}
-				<section class="toggle">
+				<section class="toggle tipo-{{tdoc.codigo}}">
 					<label>{{ tdoc.name }}</label>
 					<div class="toggle-content toggle-bordered">
-						<div class="toggle toggle-primary toggle-simple" data-plugin-toggle data-plugin-options="{ 'isAccordion': false }">
+						<div class="toggle toggle-primary toggle-simple" data-plugin-toggle data-plugin-options="{ 'isAccordion': false, 'setActive':true }">
 							{% for expediente in expedientes[tdoc.codigo] or [] %}
 							{% if expediente.documentos|len > 0 %}
-							<section class="toggle">
+							<section class="toggle exp-{{expediente.name}}">
 								<label>{{expediente.name}}{% if expediente.signatura %}: {{expediente.signatura}}{% endif%} {% if can_edit%}<a href="/desk#Form/Expediente/{{expediente.name}}" target="_blank"><i class="fas fa-edit fas-orange float-right"></i></a>{% endif %}<br>
 									<ul class="list list-icons list-icons-sm">
 									{% for descripcion in expediente.descripcion %}
